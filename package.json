@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "axios": "^1.4.0",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
+    "ms-teams-webhook": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2"
+  },
+  "scripts": {
+    "start": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run --unsafely-ignore-certificate-errors src/index.ts"
+  }
+}

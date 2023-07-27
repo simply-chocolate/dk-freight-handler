@@ -1,0 +1,15 @@
+These things need to be done in order for the project to be finished, sorted by priority:
+
+U_CCF_ShippingProduct: 'KT1' | 'PL1' | 'PL2' | 'PL4'
+U_CCF_NumberOfShippingProducts: Number
+U_CCF_ExchangePallet: 'Y' | 'N'
+U_CCF_FreightBooked: 'Y' | 'N'
+U_CCF_DOTDelivery: 'N' | 'DT1' | 'DT2' | 'DT3' | 'DT4' | We need a SAP field for the 4 DOT Types. So it shall have 5 values, where the last value is "not dot"
+U_CCF_DOTIntervalStart: DateTime - Use the Date in Delivery Date and the time in this field
+U_CCF_DOTIntervalEnd: DateTime - Use the Date in Delivery Date and the time in this field
+U_CCF_TrackAndTrace: A sap field for storing the Track & Trace link using the method /v1/TrackAndTrace/TrackTraceClientUrl
+U_CCF_Web_ShippingFee: Already exists in SAP, but here we can store the price of a shipment in SAP to better analyze shipping costs for customers. Use the endpoint /v1/Price/{consignmentNumber}
+
+
+
+We need to see if we can transfer the ShippingType Data over to the order/delivery note, so we don't need to call the customer endpoint as well (not a top priority)

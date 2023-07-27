@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "c4820caa-9744-4b04-a61a-70b30fe1b502",
+		"name": "Copenhagen Chocolate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17228813"
+	},
+	"item": [
+		{
+			"name": "TEST-Copenhagen Chocolate Factory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "b19a89f0-1fa5-463a-81e4-882eb8caaeef",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "fragt\\api_t_32761844",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "5du93CPjpnZ9Xps2",
+							"type": "text"
+						},
+						{
+							"key": "resource",
+							"value": "https://apistaging.fragt.dk",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://sts.fragt.dk/adfs/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"sts",
+						"fragt",
+						"dk"
+					],
+					"path": [
+						"adfs",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
