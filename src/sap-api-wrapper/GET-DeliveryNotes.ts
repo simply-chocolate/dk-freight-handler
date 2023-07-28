@@ -72,8 +72,10 @@ export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
           'DocumentLines',
           'AddressExtension',
         ].join(','),
-        $where: `U_CCF_DF_TrackAndTrace eq '' `,
-        $filter: `DocDate eq '${now}'`,
+        $filter: `DocDate eq '${now}' and U_CCF_DF_TrackAndTrace eq ''`, // TODO: Might need to change the track&trace filter to "IsBooked"
+        // U_CCF_DF_FreightBooked: 'Y' | 'N' | 'P' (Print label again),
+        // U_CCF_DF_ConsignementID: string | number
+        // We might need to store the consignmeent ID from DF in SAP as well, so we can print out a label thats already been handled
       },
     })
 
