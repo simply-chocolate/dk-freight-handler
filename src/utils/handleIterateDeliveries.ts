@@ -91,7 +91,7 @@ export async function iterateDeliveryNotes() {
     console.log('Label path is undefined')
     return
   }
-  printFileLinux(labelPath, 'FragtLabels')
+  await printFileLinux(labelPath, 'FragtLabel')
 
   /*
   const consignmentListPath = await savePDF(consignmentList, 'consignment_list')
