@@ -85,10 +85,6 @@ export async function iterateDeliveryNotes() {
     return
   }
 
-  //const now = new Date()
-  //const timestamp = format(now, 'yyyy-MM-dd_HHmmss')
-  //const labelsSavePath = `./temp/labels/labels_${timestamp}.pdf`
-  // const consignmentListSavePath = `./temp/consignment_lists/consignment_list_${timestamp}.pdf`
   const labelPath = await savePDF(labelsPdfData, 'labels')
   console.log('Label path: ', labelPath)
   const consignmentListPath = await savePDF(consignmentList, 'consignment_list')

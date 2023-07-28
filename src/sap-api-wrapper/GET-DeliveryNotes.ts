@@ -19,16 +19,16 @@ export type SapDeliveryNoteData = {
   Address: string
 
   // TODO: Create the fields in SAP
-  U_CCF_ShippingProduct: 'KT1' | 'PL1' | 'PL2' | 'PL4'
-  U_CCF_NumberOfShippingProducts: number
+  U_CCF_DF_ShippingProduct: 'KT1' /* DEFAULT */ | 'PL1' | 'PL2' | 'PL4'
+  U_CCF_DF_NumberOfShippingProducts: number /* DEFAULT EMPTY - IF EMPTY: Assume 1 */
+  U_CCF_DF_ExchangePallet: 'N' | 'Y' /* DEFAULT */
+  U_CCF_DF_DOTDelivery: 'N' /* DEFAULT */ | 'Dot1' | 'Dot2' | 'Dot3' // |  'Dot4'
+  U_CCF_DF_DOTIntervalStart: Date // We only need the start, we can just calculate the end?
+  U_CCF_DF_DOTIntervalEnd: Date
 
-  U_CCF_FreightBooked: 'N' | 'Y'
-
-  // TODO: Should these be on the customer??
-  U_CCF_ExchangePallet: 'N' | 'Y'
-  U_CCF_DOTDelivery: 'N' | 'Dot1' | 'Dot2' | 'Dot3' | 'Dot4'
-  U_CCF_DOTIntervalStart: Date
-  U_CCF_DOTIntervalEnd: Date
+  // These two are something we send back to SAP after the delivery is booked
+  U_CCF_DF_FreightBooked: 'N' | 'Y'
+  U_CCF_DF_TrackAndTrace: string
 
   DocumentLines: [
     {

@@ -1,7 +1,7 @@
 export async function printFileLinux(fileName: string) {
   // Guide to setup GK420d on linux using CUPS: https://www.zebra.com/content/dam/zebra_new_ia/en-us/software-printer/drivers/en/third-party/ZSN108111-v4_CUPS_Installation.pdf
   const command = new Deno.Command('lp', {
-    args: ['-d', 'LabelPrinter', fileName],
+    args: ['-d', 'FragtLabel', fileName],
     stdin: 'piped',
     stdout: 'piped',
   })

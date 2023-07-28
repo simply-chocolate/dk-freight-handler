@@ -40,7 +40,7 @@ export type ConsignmentBodyData = {
 
   Initiator: SenderAddress
   PickupRemarks?: string
-  DeliveryRemark?: string
+  DeliveryRemark?: string // TODO: Create field in SAP for the? Or use
   Receiver: {
     Name: string
     Street: string
