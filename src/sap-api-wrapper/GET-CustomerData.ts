@@ -53,7 +53,8 @@ export async function getCustomers(deliveryNotes: SapDeliveryNotesData): Promise
       sendTeamsMessage(
         'getCustomers SAP request failed',
         `**Code**: ${error.response?.data.error.code}<BR>
-          **Error Message**: ${error.response?.data.error.message.value}<BR>`
+          **Error Message**: ${error.response?.data.error.message.value}<BR>
+          **Body**: ${JSON.stringify(error.config)}<BR>`
       )
     }
   }

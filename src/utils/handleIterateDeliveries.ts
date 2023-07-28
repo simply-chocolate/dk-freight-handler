@@ -14,9 +14,15 @@ export async function iterateDeliveryNotes() {
   if (!deliveryNotes) {
     console.log('No delivery notes found')
     return
+  } else if (deliveryNotes.value.length === 0) {
+    console.log('No delivery notes found')
+    return
   }
   const customers = await getCustomers(deliveryNotes)
   if (!customers) {
+    console.log('No customers found')
+    return
+  } else if (customers.value.length === 0) {
     console.log('No customers found')
     return
   }
