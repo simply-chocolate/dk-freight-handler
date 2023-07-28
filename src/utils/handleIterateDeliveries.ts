@@ -8,6 +8,7 @@ import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
 import { savePDF } from './savePDF.ts'
 import { deliveryAddressIsValid } from './utils.ts'
+import { printFileLinux } from './handlePrinting.ts'
 
 export async function iterateDeliveryNotes() {
   const deliveryNotes = await getDeliveryNotes()
@@ -86,7 +87,18 @@ export async function iterateDeliveryNotes() {
   }
 
   const labelPath = await savePDF(labelsPdfData, 'labels')
-  console.log('Label path: ', labelPath)
+  if (!labelPath) {
+    console.log('Label path is undefined')
+    return
+  }
+  printFileLinux(labelPath, 'FragtLabels')
+
+  /*
   const consignmentListPath = await savePDF(consignmentList, 'consignment_list')
-  console.log('Consignment list path: ', consignmentListPath)
+  if (!consignmentListPath) {
+    console.log('Consignment list path is undefined')
+    return
+  }
+  printFileLinux(consignmentListPath)
+  */
 }

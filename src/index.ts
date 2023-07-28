@@ -12,9 +12,6 @@ async function main() {
   } else {
     const timestamp = new Date(new Date().getTime()).toLocaleString()
     console.log(timestamp + ': Running the pre Cron job')
-
-    //await printFileLinux('test.txt')
-
     await iterateDeliveryNotes()
     /*
     const deliveryNotes = await getDeliveryNotes()
