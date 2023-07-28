@@ -28,7 +28,7 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
     ShippingType: 'PalleEnhedsForsendelse', // This will probably always be PallEnhedsForsendelse
     Goods: [
       {
-        NumberOfItems: 1, // deliveryNote.U_CCF_NumberOfShippingProducts, // TODO: Use SAP Field when created
+        NumberOfItems: 4, // deliveryNote.U_CCF_NumberOfShippingProducts, // TODO: Use SAP Field when created
         Type: 'PL1', // deliveryNote.U_CCF_ShippingProduct , // TODO: Use SAP Field when created
         Description: 'Chokolade',
         Weight: Math.round(totalWeight),

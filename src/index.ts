@@ -4,7 +4,8 @@ import { checkEnvs } from './utils/handleCheckingEnvs.ts'
 import { iterateDeliveryNotes } from './utils/handleIterateDeliveries.ts'
 
 async function main() {
-  //TODO: Create a function for handling env loading (Check all env fields and see if they have a value. Also if their typing is correct)
+  // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
+  // https://github.com/LukeChannings/deno-arm64
   const result = checkEnvs()
 
   if (result.type == 'error') {
