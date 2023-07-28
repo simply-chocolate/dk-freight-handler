@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 import { getConsignmentsListForPrint } from '../fragt-api-wrapper/GET-consignmentsListForPrintPDF.ts'
 import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
@@ -6,9 +5,9 @@ import { getCustomers } from '../sap-api-wrapper/GET-CustomerData.ts'
 import { getDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
+import { printFileLinux } from './handlePrinting.ts'
 import { savePDF } from './savePDF.ts'
 import { deliveryAddressIsValid } from './utils.ts'
-import { printFileLinux } from './handlePrinting.ts'
 
 export async function iterateDeliveryNotes() {
   const deliveryNotes = await getDeliveryNotes()
@@ -60,6 +59,9 @@ export async function iterateDeliveryNotes() {
     }
 
     consignmentIDs.push(consignmentID)
+
+    // TODO: Should we just run through all the delivery notes after the labels have been printed, and then add track & trace to the deliveries in SAP?
+    // TODO: Maybe we do need the field for checking if the delivery note has been processed or not
     /*
     const trackAndTraceUrl = await getTrackAndTraceUrl(consignmentID)
     if (!trackAndTraceUrl) {
@@ -91,14 +93,20 @@ export async function iterateDeliveryNotes() {
     console.log('Label path is undefined')
     return
   }
-  await printFileLinux(labelPath, 'FragtLabel')
 
-  /*
+  const [printLabelStatus, printLabelOutput] = await printFileLinux(labelPath, 'FragtLabel') // TODO: Create env variable for printer names?
+  console.log('Print label status: ', printLabelStatus)
+  console.log('Print label output: ', printLabelOutput)
+
   const consignmentListPath = await savePDF(consignmentList, 'consignment_list')
   if (!consignmentListPath) {
     console.log('Consignment list path is undefined')
     return
   }
-  printFileLinux(consignmentListPath)
-  */
+  const [printConsignmentListStatus, printConsignmentListOutput] = await printFileLinux(
+    consignmentListPath,
+    'Ineo3300i'
+  ) // TODO: Create env variable for printer names?
+  console.log('Print consignment list status: ', printConsignmentListStatus)
+  console.log('Print consignment list output: ', printConsignmentListOutput)
 }

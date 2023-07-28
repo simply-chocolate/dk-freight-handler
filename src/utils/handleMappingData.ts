@@ -28,8 +28,11 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
     ShippingType: 'PalleEnhedsForsendelse', // This will probably always be PallEnhedsForsendelse
     Goods: [
       {
-        NumberOfItems: 4, // deliveryNote.U_CCF_NumberOfShippingProducts, // TODO: Use SAP Field when created
-        Type: 'PL1', // deliveryNote.U_CCF_ShippingProduct , // TODO: Use SAP Field when created
+        NumberOfItems:
+          deliveryNote.U_CCF_DF_NumberOfShippingProducts == null
+            ? 1
+            : deliveryNote.U_CCF_DF_NumberOfShippingProducts, // , // TODO: Use SAP Field when created
+        Type: 'PL1', // deliveryNote.U_CCF_DF_ShippingProduct , // TODO: Use SAP Field when created
         Description: 'Chokolade',
         Weight: Math.round(totalWeight),
       },
@@ -50,16 +53,18 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
     Sender: senderAddress,
     SenderReference: deliveryNote.DocNum,
     Reference1: deliveryNote.NumAtCard,
-    // TODO: DeliveryRemark: customer.DeliveryRemark or something like that,
+    // TODO: DeliveryRemark: deliveryNote.Comments Here Palle or Anders needs to be able to add a comment to the delivery etc: "PORT 15",
   }
+  // TODO: We need to convert the DotIntervalStart to a date with hours and then we need to use the DOT Type to calculate the interval End
   /*
-    if (deliveryNote.U_CCF_DOTDelivery !== 'N') {
+    if (deliveryNote.U_CCF_DF_DOTDelivery !== 'N') {
       consignmentData.DeliveryTime = {
-        DotIntervalStart:,
+        DotIntervalStart: deliveryNote.U_CCF_DF_DOTIntervalStart,
         DotIntervalEnd: ,
-        DotType: deliveryNote.U_CCF_DOTDelivery,
+        DotType: deliveryNote.U_CCF_DF_DOTDelivery,
       }
     }
-  */
+    */
+
   return consignmentData
 }

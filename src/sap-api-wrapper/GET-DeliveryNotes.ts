@@ -72,6 +72,7 @@ export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
           'DocumentLines',
           'AddressExtension',
         ].join(','),
+        $where: `U_CCF_DF_TrackAndTrace eq '' `,
         $filter: `DocDate eq '${now}'`,
       },
     })
