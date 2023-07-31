@@ -1,3 +1,4 @@
+import { getTrackAndTraceUrl } from '../fragt-api-wrapper/GET-TrackAndTraceUrl.ts'
 import { getConsignmentsListForPrint } from '../fragt-api-wrapper/GET-consignmentsListForPrintPDF.ts'
 import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
@@ -66,16 +67,11 @@ export async function iterateDeliveryNotes() {
 
     consignmentIDs.push(consignmentID)
 
-    // TODO: Should we just run through all the delivery notes after the labels have been printed, and then add track & trace to the deliveries in SAP?
-    // TODO: Maybe we do need the field for checking if the delivery note has been processed or not
-    /*
     const trackAndTraceUrl = await getTrackAndTraceUrl(consignmentID)
     if (!trackAndTraceUrl) {
       console.log('Track and trace url creation failed')
       continue
     }
-    console.log(trackAndTraceUrl)
-    */
   }
 
   if (consignmentIDs.length === 0) {
@@ -100,19 +96,32 @@ export async function iterateDeliveryNotes() {
     return
   }
 
-  const [printLabelStatus, printLabelOutput] = await printFileLinux(labelPath, 'FragtLabel') // TODO: Create env variable for printer names?
-  console.log('Print label status: ', printLabelStatus)
-  console.log('Print label output: ', printLabelOutput)
+  // TODO: Check that the print is successful
+  const labelPrinterName = Deno.env.get('PI_PRINTER_NAME_LABEL')
+  if (!labelPrinterName) {
+    console.log('Label printer name is undefined')
+    return
+  }
 
+  const printLabel = await printFileLinux(labelPath, labelPrinterName) // TODO: Create env variable for printer names?
+  if (!printLabel) {
+    return
+  }
+
+  // TODO: Figure out how to use the bypass tray
   const consignmentListPath = await savePDF(consignmentList, 'consignment_list')
   if (!consignmentListPath) {
     console.log('Consignment list path is undefined')
     return
   }
-  const [printConsignmentListStatus, printConsignmentListOutput] = await printFileLinux(
-    consignmentListPath,
-    'Ineo3300i'
-  ) // TODO: Create env variable for printer names?
-  console.log('Print consignment list status: ', printConsignmentListStatus)
-  console.log('Print consignment list output: ', printConsignmentListOutput)
+
+  const consignmentListPrinterName = Deno.env.get('PI_PRINTER_NAME_CONSIGNMENTLIST')
+  if (!consignmentListPrinterName) {
+    console.log('Label printer name is undefined')
+    return
+  }
+  const printConsignmentList = await printFileLinux(consignmentListPath, consignmentListPrinterName) // TODO: Create env variable for printer names?
+  if (!printConsignmentList) {
+    return
+  }
 }

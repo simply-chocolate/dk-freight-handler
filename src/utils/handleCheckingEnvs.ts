@@ -62,6 +62,18 @@ export function checkEnvs(): returnType {
       error: 'Error loading env variable DF_PASSWORD',
     }
   }
+  if (Deno.env.get('PI_PRINTER_NAME_LABEL') === '') {
+    return {
+      type: 'error',
+      error: 'Error loading env variable PI_PRINTER_NAME_LABEL',
+    }
+  }
+  if (Deno.env.get('PI_PRINTER_NAME_CONSIGNMENTLIST') === '') {
+    return {
+      type: 'error',
+      error: 'Error loading env variable PI_PRINTER_NAME_CONSIGNMENTLIST',
+    }
+  }
 
   return {
     type: 'success',
