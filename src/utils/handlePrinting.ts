@@ -1,3 +1,5 @@
+import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
+
 export async function printFileLinux(fileName: string, printerName: string): Promise<string | void> {
   if (Deno.build.os === 'windows') {
     console.log("This function can't be used on Windows")
@@ -12,11 +14,11 @@ export async function printFileLinux(fileName: string, printerName: string): Pro
   const child = command.spawn()
   const output = await child.output()
   if (!output) {
-    console.log('Unable to get print output')
+    await sendTeamsMessage('Unable to get print output')
     return
   }
   if (!output.success) {
-    console.log('Print Failed with code: ', output.code)
+    await sendTeamsMessage('Print Failed', `Print Failed with code: ${output.code}`)
     return
   }
 
@@ -25,11 +27,11 @@ export async function printFileLinux(fileName: string, printerName: string): Pro
   const status = await child.status
 
   if (!status) {
-    console.log('Unable to get print status')
+    await sendTeamsMessage('Unable to get print status')
     return
   }
   if (!status.success) {
-    console.log('Print Failed with code: ', status.code)
+    await sendTeamsMessage('Print Failed', `Print Failed with code: ${status.code}`)
     return
   }
 

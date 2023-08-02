@@ -77,15 +77,11 @@ export async function createConsignment(
       sendTeamsMessage(
         'createConsignment DF request failed',
         `**DeliveryNote**: ${deliveryNote}<BR>
-          **Code**: ${error.response?.data.error.code}<BR>
-          **Error Message**: ${error.response?.data.error.message}<BR>
+          **Code**: ${error.code}<BR>
+          **Error Message**: ${error.message}<BR>
           **Body**: ${JSON.stringify(error.config?.data)}<BR>
           `
       )
-      console.log(deliveryNote)
-      console.log("Darn it, we got an Axios error. Here's the error message: ")
-      console.log(error.response?.data)
-      console.log('And heres the body we sent: ', error.config?.data)
     }
     return
   }

@@ -4,6 +4,7 @@ import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
 import { getCustomers } from '../sap-api-wrapper/GET-CustomerData.ts'
 import { getDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
+import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
 import { printFileLinux } from './handlePrinting.ts'
@@ -31,7 +32,12 @@ export async function iterateDeliveryNotes() {
   const consignmentIDs: string[] = []
 
   for (const deliveryNote of deliveryNotes.value) {
+    if (deliveryNote.AddressExtension.ShipToCountry !== 'DK') {
+      continue
+    }
+
     const customer = customers.value.find((customer) => customer.CardCode === deliveryNote.CardCode)
+
     if (!customer) {
       await sendTeamsMessage(
         'Customer number not found in SAP',
@@ -40,87 +46,96 @@ export async function iterateDeliveryNotes() {
       )
       continue
     }
-    if (customer.ShippingType === 14) {
-      await sendTeamsMessage(
-        "Customer's shipping type is 14 which means they'll collect the goods themselves.",
-        `**Customer Number**: ${customer.CardCode} <BR>
-        **Customer Name**: ${customer.CardName} <BR>`
-      )
-      continue
-    }
+
     if (!deliveryAddressIsValid(deliveryNote)) {
-      console.log('Delivery address is not valid')
+      await sendTeamsMessage(
+        'Delivery address is not valid',
+        `**Customer Number**: ${deliveryNote.CardCode} <BR>
+        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+      )
       continue
     }
 
     const consignmentData = mapSAPDataToDF(deliveryNote)
     if (consignmentData == undefined) {
-      console.log('consignmentData has not been properly mapped')
+      await sendTeamsMessage(
+        'Mapping of SAP data to DF data failed',
+        `**Customer Number**: ${deliveryNote.CardCode} <BR>
+        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+      )
       continue
     }
 
     const consignmentID = await createConsignment(consignmentData, deliveryNote.DocNum)
     if (!consignmentID) {
-      console.log('Consignment creation failed')
       continue
     }
-
     consignmentIDs.push(consignmentID)
 
-    const trackAndTraceUrl = await getTrackAndTraceUrl(consignmentID)
+    const trackAndTraceUrl = await getTrackAndTraceUrl(consignmentID, deliveryNote.DocNum)
     if (!trackAndTraceUrl) {
-      console.log('Track and trace url creation failed')
       continue
     }
+
+    /*const SetTrackAndTraceResult = */ await setTrackAndTraceUrl(
+      trackAndTraceUrl,
+      deliveryNote.DocEntry,
+      deliveryNote.DocNum
+    )
+    /*
+    // TODO: Since theres no actions after this, we don't need to handle it to save memory
+    if (!SetTrackAndTraceResult) {
+      continue
+    }
+    */
   }
 
   if (consignmentIDs.length === 0) {
-    console.log('No consignments created')
     return
   }
 
   const labelsPdfData = await getLabelsForPrintPDF(consignmentIDs)
   if (!labelsPdfData) {
-    console.log('No labels found')
     return
   }
   const consignmentList = await getConsignmentsListForPrint(consignmentIDs)
   if (!consignmentList) {
-    console.log('No consignment list found')
     return
   }
 
   const labelPath = await savePDF(labelsPdfData, 'labels')
   if (!labelPath) {
-    console.log('Label path is undefined')
     return
   }
 
-  // TODO: Check that the print is successful
   const labelPrinterName = Deno.env.get('PI_PRINTER_NAME_LABEL')
   if (!labelPrinterName) {
-    console.log('Label printer name is undefined')
+    await sendTeamsMessage(
+      'Label printer name is undefined',
+      `Please set the environment variable PI_PRINTER_NAME_LABEL <BR>`
+    )
     return
   }
 
-  const printLabel = await printFileLinux(labelPath, labelPrinterName) // TODO: Create env variable for printer names?
+  const printLabel = await printFileLinux(labelPath, labelPrinterName)
   if (!printLabel) {
     return
   }
 
-  // TODO: Figure out how to use the bypass tray
   const consignmentListPath = await savePDF(consignmentList, 'consignment_list')
   if (!consignmentListPath) {
-    console.log('Consignment list path is undefined')
     return
   }
 
   const consignmentListPrinterName = Deno.env.get('PI_PRINTER_NAME_CONSIGNMENTLIST')
   if (!consignmentListPrinterName) {
-    console.log('Label printer name is undefined')
+    await sendTeamsMessage(
+      'Consignment list printer name is undefined',
+      `Please set the environment variable PI_PRINTER_NAME_CONSIGNMENTLIST <BR>`
+    )
     return
   }
-  const printConsignmentList = await printFileLinux(consignmentListPath, consignmentListPrinterName) // TODO: Create env variable for printer names?
+  const printConsignmentList = await printFileLinux(consignmentListPath, consignmentListPrinterName)
   if (!printConsignmentList) {
     return
   }

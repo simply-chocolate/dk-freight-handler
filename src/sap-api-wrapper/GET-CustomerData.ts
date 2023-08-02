@@ -26,15 +26,6 @@ export async function getCustomers(deliveryNotes: SapDeliveryNotesData): Promise
       continue
     }
 
-    if (deliveryNote.AddressExtension.ShipToCountry !== 'DK') {
-      console.log(
-        "Delivery note isn't for Denmark. Delivery note:" +
-          deliveryNote.DocNum +
-          ' customer ' +
-          deliveryNote.CardCode
-      )
-    }
-
     customerNumbers.push(deliveryNote.CardCode)
   }
 
