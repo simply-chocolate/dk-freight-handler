@@ -14,8 +14,8 @@ export type ConsignmentBodyData = {
     PickupIntervalEnd: string
   }
   DeliveryTime?: {
-    DotIntervalStart: Date
-    DotIntervalEnd: Date
+    DotIntervalStart: string
+    DotIntervalEnd: string
     DotType:
       | 'Dot1' // 07:00-10:00 Rule:  Before 10 AM.
       | 'Dot2' // 09:00-15:00 Rule: Delivery within a time frame of 2 hours.
@@ -40,7 +40,13 @@ export type ConsignmentBodyData = {
 
   Initiator: SenderAddress
   PickupRemarks?: string
-  DeliveryRemark?: string // TODO: Create field in SAP for the? Or use
+
+  DeliveryRemark?: string
+  DeliveryRemark2?: string
+  DeliveryRemark3?: string
+  DeliveryRemark4?: string
+  DeliveryRemark5?: string
+
   Receiver: {
     Name: string
     Street: string
@@ -78,7 +84,7 @@ export async function createConsignment(
         'createConsignment DF request failed',
         `**DeliveryNote**: ${deliveryNote}<BR>
           **Code**: ${error.code}<BR>
-          **Error Message**: ${error.message}<BR>
+          **Error**: ${JSON.stringify(error.response?.data)}<BR>
           **Body**: ${JSON.stringify(error.config?.data)}<BR>
           `
       )

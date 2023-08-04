@@ -9,7 +9,7 @@ export type SapDeliveryNotesData = {
 export type SapDeliveryNoteData = {
   DocEntry: number
   DocNum: number
-  DocDate: Date
+  DocDate: string
   DocDueDate: string
   CardCode: string
   CardName: string
@@ -18,17 +18,15 @@ export type SapDeliveryNoteData = {
   DocumentStatus: string
   Address: string
 
-  // TODO: Create the fields in SAP
-  U_CCF_DF_ShippingProduct: 'KT1' /* DEFAULT */ | 'PL1' | 'PL2' | 'PL4'
-  U_CCF_DF_NumberOfShippingProducts: number /* DEFAULT EMPTY - IF EMPTY: Assume 1 */
+  U_CCF_DF_ShippingProduct: 'KT1' | 'PL1' | 'PL2' | 'PL4'
+  U_CCF_DF_NumberOfShippingProducts: number /* DEFAULT EMPTY - IF EMPTY: ERROR */
   U_CCF_DF_ExchangePallet: 'N' | 'Y' /* DEFAULT */
   U_CCF_DF_DOTDelivery: 'N' /* DEFAULT */ | 'Dot1' | 'Dot2' | 'Dot3' // |  'Dot4'
-  U_CCF_DF_DOTIntervalStart: Date // We only need the start, we can just calculate the end?
-  U_CCF_DF_DOTIntervalEnd: Date
-
-  // These two are something we send back to SAP after the delivery is booked
-  U_CCF_DF_FreightBooked: 'N' | 'Y'
-  U_CCF_DF_TrackAndTrace: string
+  U_CCF_DF_DOTIntervalStart: string // We only need the start, we can just calculate the end?
+  // MIGHT COME IN HANDY SOME DAY: U_CCF_DF_DOTIntervalEnd: Date
+  U_CCF_DF_DeliveryRemark: string
+  U_CCF_DF_FreightBooked: 'N' | 'Y' | 'P' // P = Print label again
+  U_CCF_DF_ConsignmentID: string | undefined
 
   DocumentLines: [
     {
@@ -40,15 +38,17 @@ export type SapDeliveryNoteData = {
     }
   ]
   // The names of these fields are not always containing the data you'd think they would
-  AddressExtension: {
-    ShipToBuilding: string // Is Company Name
-    ShipToStreet: string
-    ShipToStreetNo: string
-    ShiptopBlock: string
-    ShipToZipCode: string
-    ShipToCity: string
-    ShipToCountry: string
-  }
+  AddressExtension: AddressExtension
+}
+
+export type AddressExtension = {
+  ShipToBuilding: string // Is Company Name
+  ShipToStreet: string
+  ShipToStreetNo: string
+  ShipToBlock: string
+  ShipToZipCode: string
+  ShipToCity: string
+  ShipToCountry: string
 }
 
 export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
@@ -67,15 +67,27 @@ export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
           'CardName',
           'NumAtCard',
           'Comments',
+          'U_CCF_DF_ShippingProduct',
+          'U_CCF_DF_NumberOfShippingProducts',
+          'U_CCF_DF_ExchangePallet',
+          'U_CCF_DF_DOTDelivery',
+          'U_CCF_DF_DOTIntervalStart',
+          'U_CCF_DF_DeliveryRemark',
+          'U_CCF_DF_FreightBooked',
+          'U_CCF_DF_ConsignmentID',
           'DocumentStatus',
           'Address',
           'DocumentLines',
           'AddressExtension',
         ].join(','),
-        $filter: `DocDate eq '${now}'`, // TODO: Might need to change the track&trace filter to "IsBooked"
-        // U_CCF_DF_FreightBooked: 'Y' | 'N' | 'P' (Print label again),
-        // U_CCF_DF_ConsignementID: string | number
-        // We might need to store the consignmeent ID from DF in SAP as well, so we can print out a label thats already been handled
+        $filter: [
+          `DocDate eq '${now}`,
+          "U_CCF_DF_FreightBooked ne 'Y'",
+          'TransportationCode ne 14',
+          "U_CCF_DF_ShippingProduct ne ''",
+          'U_CCF_DF_NumberOfShippingProducts gt 0',
+          "U_CCF_AddressValidation eq 'validated'",
+        ].join(' and '),
       },
     })
 
@@ -84,8 +96,8 @@ export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
     if (error instanceof AxiosError) {
       sendTeamsMessage(
         'getDeliveryNotes SAP request failed',
-        `**Code**: ${error.response?.data.error.code}<BR>
-          **Error Message**: ${error.response?.data.error.message.value}<BR>
+        `**Code**: ${error.code}<BR>
+          **Error Message**: ${error.message}<BR>
           **Body**: ${JSON.stringify(error.config)}<BR>`
       )
     }

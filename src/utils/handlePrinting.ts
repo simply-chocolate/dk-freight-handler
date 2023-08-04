@@ -2,8 +2,7 @@ import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
 export async function printFileLinux(fileName: string, printerName: string): Promise<string | void> {
   if (Deno.build.os === 'windows') {
-    console.log("This function can't be used on Windows")
-    return
+    return "This function can't be used on Windows"
   }
   // Guide to setup GK420d on linux using CUPS: https://www.zebra.com/content/dam/zebra_new_ia/en-us/software-printer/drivers/en/third-party/ZSN108111-v4_CUPS_Installation.pdf
   const command = new Deno.Command('lp', {

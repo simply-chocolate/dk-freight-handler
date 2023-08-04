@@ -2,48 +2,62 @@ import { getTrackAndTraceUrl } from '../fragt-api-wrapper/GET-TrackAndTraceUrl.t
 import { getConsignmentsListForPrint } from '../fragt-api-wrapper/GET-consignmentsListForPrintPDF.ts'
 import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
-import { getCustomers } from '../sap-api-wrapper/GET-CustomerData.ts'
 import { getDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
+import { getOpenOrders } from '../sap-api-wrapper/GET-OpenOrders.ts'
+import { setAddressValidation } from '../sap-api-wrapper/PATCH-SetAddressValidation.ts'
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
 import { printFileLinux } from './handlePrinting.ts'
 import { savePDF } from './savePDF.ts'
 import { deliveryAddressIsValid } from './utils.ts'
+import { validateAddress } from './validateAddress.ts'
 
 export async function iterateDeliveryNotes() {
-  const deliveryNotes = await getDeliveryNotes()
-  if (!deliveryNotes) {
-    console.log('No delivery notes found')
+  const orders = await getOpenOrders()
+  if (!orders) {
+    console.log('No open orders found')
     return
-  } else if (deliveryNotes.value.length === 0) {
-    console.log('No delivery notes found')
+  } else if (orders.value.length === 0) {
+    console.log('No open orders found')
     return
   }
-  const customers = await getCustomers(deliveryNotes)
-  if (!customers) {
-    console.log('No customers found')
+
+  for (const order of orders.value) {
+    const validationResponse = await validateAddress(order.AddressExtension, order.CardCode, order.DocNum)
+    if (validationResponse) {
+      setAddressValidation(order.DocEntry, order.DocNum, validationResponse.join(','))
+      continue
+    }
+    setAddressValidation(order.DocEntry, order.DocNum, 'validated')
+  }
+
+  return
+  const deliveryNotes = await getDeliveryNotes()
+  if (!deliveryNotes) {
     return
-  } else if (customers.value.length === 0) {
-    console.log('No customers found')
+  } else if (deliveryNotes.value.length === 0) {
     return
   }
 
   const consignmentIDs: string[] = []
 
   for (const deliveryNote of deliveryNotes.value) {
-    if (deliveryNote.AddressExtension.ShipToCountry !== 'DK') {
-      continue
+    console.log('deliveryNote:', deliveryNote.DocNum)
+
+    if (deliveryNote.U_CCF_DF_FreightBooked === 'P') {
+      if (deliveryNote.U_CCF_DF_ConsignmentID == undefined) {
+        await sendTeamsMessage(
+          'Trying to Print Label again, but no consignment ID is on order',
+          `**Customer Number**: ${deliveryNote.CardCode} <BR>
+          **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+        )
+        continue
+      }
+      consignmentIDs.push(deliveryNote.U_CCF_DF_ConsignmentID)
     }
 
-    const customer = customers.value.find((customer) => customer.CardCode === deliveryNote.CardCode)
-
-    if (!customer) {
-      await sendTeamsMessage(
-        'Customer number not found in SAP',
-        `**Customer Number**: ${deliveryNote.CardCode} <BR>
-        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
-      )
+    if (deliveryNote.AddressExtension.ShipToCountry !== 'DK') {
       continue
     }
 
@@ -77,17 +91,7 @@ export async function iterateDeliveryNotes() {
       continue
     }
 
-    /*const SetTrackAndTraceResult = */ await setTrackAndTraceUrl(
-      trackAndTraceUrl,
-      deliveryNote.DocEntry,
-      deliveryNote.DocNum
-    )
-    /*
-    // TODO: Since theres no actions after this, we don't need to handle it to save memory
-    if (!SetTrackAndTraceResult) {
-      continue
-    }
-    */
+    await setTrackAndTraceUrl(trackAndTraceUrl, deliveryNote.DocEntry, deliveryNote.DocNum, consignmentID)
   }
 
   if (consignmentIDs.length === 0) {

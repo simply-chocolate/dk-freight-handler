@@ -1,6 +1,6 @@
 import { ConsignmentBodyData, SenderAddress } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
 import { SapDeliveryNoteData } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
-import { returnDateWithHours } from './utils.ts'
+import { returnDateWithHours, setDotIntervals } from './utils.ts'
 
 export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBodyData {
   const senderAddress: SenderAddress = {
@@ -31,15 +31,17 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
         NumberOfItems:
           deliveryNote.U_CCF_DF_NumberOfShippingProducts == null
             ? 1
-            : deliveryNote.U_CCF_DF_NumberOfShippingProducts, // , // TODO: Use SAP Field when created
-        Type: 'PL1', // deliveryNote.U_CCF_DF_ShippingProduct , // TODO: Use SAP Field when created
+            : deliveryNote.U_CCF_DF_NumberOfShippingProducts,
+        Type: deliveryNote.U_CCF_DF_ShippingProduct,
         Description: 'Chokolade',
         Weight: Math.round(totalWeight),
       },
     ],
     Receiver: {
       Name: deliveryNote.AddressExtension.ShipToBuilding,
-      Street: deliveryNote.AddressExtension.ShipToStreet,
+      Street: deliveryNote.AddressExtension.ShipToStreet
+        ? deliveryNote.AddressExtension.ShipToStreet
+        : deliveryNote.AddressExtension.ShipToBlock,
       Town: deliveryNote.AddressExtension.ShipToCity,
       ZipCode: deliveryNote.AddressExtension.ShipToZipCode,
       Country: deliveryNote.AddressExtension.ShipToCountry,
@@ -53,18 +55,24 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
     Sender: senderAddress,
     SenderReference: deliveryNote.DocNum,
     Reference1: deliveryNote.NumAtCard,
-    // TODO: DeliveryRemark: deliveryNote.Comments Here Palle or Anders needs to be able to add a comment to the delivery etc: "PORT 15",
+    PickupRemarks: deliveryNote.Comments,
+
+    DeliveryRemark: deliveryNote.U_CCF_DF_DeliveryRemark,
   }
-  // TODO: We need to convert the DotIntervalStart to a date with hours and then we need to use the DOT Type to calculate the interval End
-  /*
-    if (deliveryNote.U_CCF_DF_DOTDelivery !== 'N') {
-      consignmentData.DeliveryTime = {
-        DotIntervalStart: deliveryNote.U_CCF_DF_DOTIntervalStart,
-        DotIntervalEnd: ,
-        DotType: deliveryNote.U_CCF_DF_DOTDelivery,
-      }
+
+  if (deliveryNote.U_CCF_DF_DOTDelivery !== 'N') {
+    const [intervalStart, intervalEnd] = setDotIntervals(
+      deliveryNote.DocDueDate,
+      deliveryNote.U_CCF_DF_DOTIntervalStart,
+      deliveryNote.U_CCF_DF_DOTDelivery
+    )
+
+    consignmentData.DeliveryTime = {
+      DotIntervalStart: intervalStart,
+      DotIntervalEnd: intervalEnd,
+      DotType: deliveryNote.U_CCF_DF_DOTDelivery,
     }
-    */
+  }
 
   return consignmentData
 }

@@ -2,19 +2,16 @@ import { AxiosError, AxiosResponse } from 'npm:axios@1.4.0'
 import { getAuthorizedClient } from './POST-login.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
-export async function setTrackAndTraceUrl(
-  trackAndTraceUrl: string,
+export async function setAddressValidation(
   docEntry: number,
-  deliveryNote: number,
-  consignmentID: string
+  order: number,
+  validationString: string
 ): Promise<AxiosResponse | void> {
   const authClient = await getAuthorizedClient()
 
   try {
-    const res = await authClient.patch(`DeliveryNotes(${docEntry})`, {
-      U_CCF_DF_TrackAndTrace: trackAndTraceUrl, // TODO: Change type to be able to contain more than 10 chars in SAP LOL. Just go with 100!
-      U_CCF_DF_FreightBooked: 'Y',
-      U_CCF_DF_ConsignmentID: consignmentID,
+    const res = await authClient.patch(`Order(${docEntry})`, {
+      U_CCF_DF_AddressValidation: validationString,
     })
 
     return res.data
@@ -22,7 +19,7 @@ export async function setTrackAndTraceUrl(
     if (error instanceof AxiosError) {
       sendTeamsMessage(
         'setTrackAndTraceUrl SAP request failed',
-        `**DeliveryNote**: ${deliveryNote}<BR>
+        `**Order**: ${order}<BR>
         **Code**: ${error.code}<BR>
           **Error Message**: ${error.message}<BR>`
       )

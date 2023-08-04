@@ -13,6 +13,7 @@
       "@types/node@^20.4.2": "@types/node@20.4.2",
       "axios@1.4.0": "axios@1.4.0",
       "axios@^1.4.0": "axios@1.4.0",
+      "date-fns": "date-fns@2.30.0",
       "date-fns@^2.30.0": "date-fns@2.30.0",
       "dotenv@^16.3.1": "dotenv@16.3.1",
       "ms-teams-webhook@2.0.2": "ms-teams-webhook@2.0.2",
