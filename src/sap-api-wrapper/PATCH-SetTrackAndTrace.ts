@@ -24,7 +24,8 @@ export async function setTrackAndTraceUrl(
         'setTrackAndTraceUrl SAP request failed',
         `**DeliveryNote**: ${deliveryNote}<BR>
         **Code**: ${error.code}<BR>
-          **Error Message**: ${error.message}<BR>`
+          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
+          **Body**: ${JSON.stringify(error.config)}<BR>`
       )
     }
   }

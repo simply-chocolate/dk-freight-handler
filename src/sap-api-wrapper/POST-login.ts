@@ -16,7 +16,7 @@ type SuccessDataType = {
   }
 }
 
-type ErrorDataType = {
+export type ErrorDataType = {
   response: {
     data: {
       error: {

@@ -34,11 +34,15 @@ export async function getOpenOrders(): Promise<SapOrdersData | void> {
           'CardName',
           'NumAtCard',
           'Comments',
-          'U_CCF_AddressValidation',
+          'U_CCF_DF_AddressValidation',
           'DocumentStatus',
           'AddressExtension',
         ].join(','),
-        $filter: ["U_CCF_AddressValidation ne 'validated'", "DocumentStatus eq 'bost_Open'"].join(' and '),
+        $filter: [
+          "(U_CCF_DF_AddressValidation ne 'validated' or U_CCF_DF_AddressValidation eq NULL)",
+          "DocumentStatus eq 'bost_Open'",
+          'TransportationCode ne 14',
+        ].join(' and '),
       },
     })
 
@@ -48,7 +52,7 @@ export async function getOpenOrders(): Promise<SapOrdersData | void> {
       sendTeamsMessage(
         'getOpenOrders SAP request failed',
         `**Code**: ${error.code}<BR>
-          **Error Message**: ${error.message}<BR>
+          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
           **Body**: ${JSON.stringify(error.config)}<BR>`
       )
     }

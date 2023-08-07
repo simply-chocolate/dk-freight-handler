@@ -10,6 +10,7 @@ import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
 import { printFileLinux } from './handlePrinting.ts'
 import { savePDF } from './savePDF.ts'
+import { sleep } from './sleep.ts'
 import { deliveryAddressIsValid } from './utils.ts'
 import { validateAddress } from './validateAddress.ts'
 
@@ -24,15 +25,18 @@ export async function iterateDeliveryNotes() {
   }
 
   for (const order of orders.value) {
+    if (order.AddressExtension.ShipToCountry !== 'DK') {
+      continue
+    }
     const validationResponse = await validateAddress(order.AddressExtension, order.CardCode, order.DocNum)
     if (validationResponse) {
-      setAddressValidation(order.DocEntry, order.DocNum, validationResponse.join(','))
+      setAddressValidation(order.DocEntry, order.DocNum, validationResponse)
       continue
     }
     setAddressValidation(order.DocEntry, order.DocNum, 'validated')
+    sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
   }
 
-  return
   const deliveryNotes = await getDeliveryNotes()
   if (!deliveryNotes) {
     return

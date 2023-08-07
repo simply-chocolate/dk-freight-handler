@@ -81,12 +81,12 @@ export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
           'AddressExtension',
         ].join(','),
         $filter: [
-          `DocDate eq '${now}`,
+          `DocDate eq '${now}'`,
           "U_CCF_DF_FreightBooked ne 'Y'",
           'TransportationCode ne 14',
           "U_CCF_DF_ShippingProduct ne ''",
           'U_CCF_DF_NumberOfShippingProducts gt 0',
-          "U_CCF_AddressValidation eq 'validated'",
+          "U_CCF_DF_AddressValidation eq 'validated'",
         ].join(' and '),
       },
     })

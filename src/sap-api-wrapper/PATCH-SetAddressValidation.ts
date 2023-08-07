@@ -9,8 +9,17 @@ export async function setAddressValidation(
 ): Promise<AxiosResponse | void> {
   const authClient = await getAuthorizedClient()
 
+  if (validationString.length > 254) {
+    sendTeamsMessage(
+      "Validationstring is more than 254 chars, it's truncated",
+      `**Order**: ${order}<BR>
+      **ValidationString**: ${validationString}<BR>`
+    )
+    validationString = validationString.substring(0, 254)
+  }
+
   try {
-    const res = await authClient.patch(`Order(${docEntry})`, {
+    const res = await authClient.patch(`Orders(${docEntry})`, {
       U_CCF_DF_AddressValidation: validationString,
     })
 
@@ -18,10 +27,11 @@ export async function setAddressValidation(
   } catch (error) {
     if (error instanceof AxiosError) {
       sendTeamsMessage(
-        'setTrackAndTraceUrl SAP request failed',
+        'setAddressValidation SAP request failed',
         `**Order**: ${order}<BR>
         **Code**: ${error.code}<BR>
-          **Error Message**: ${error.message}<BR>`
+          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
+          **Body**: ${JSON.stringify(error.config)}<BR>`
       )
     }
   }
