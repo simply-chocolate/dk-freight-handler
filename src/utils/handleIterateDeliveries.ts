@@ -29,12 +29,12 @@ export async function iterateDeliveryNotes() {
       continue
     }
     const validationResponse = await validateAddress(order.AddressExtension, order.CardCode, order.DocNum)
+    sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
     if (validationResponse) {
       setAddressValidation(order.DocEntry, order.DocNum, validationResponse)
       continue
     }
     setAddressValidation(order.DocEntry, order.DocNum, 'validated')
-    sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
   }
 
   const deliveryNotes = await getDeliveryNotes()
