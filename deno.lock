@@ -5,6 +5,7 @@
     "https://deno.land/std@0.195.0/collections/without_all.ts": "1e3cccb1ed0659455b473c0766d9414b7710d8cef48862c899f445178f66b779",
     "https://deno.land/std@0.195.0/dotenv/load.ts": "0636983549b98f29ab75c9a22a42d9723f0a389ece5498fe971e7bb2556a12e2",
     "https://deno.land/std@0.195.0/dotenv/mod.ts": "39e5d19e077e55d7e01ea600eb1c6d1e18a8dfdfc65d68826257a576788da3a4",
+    "https://deno.land/x/deno_cron@v1.0.0/cron.ts": "7f984d0c4c7ac4fb1ad3cd241d457e7808a9362735d910abb02dc689883ee3ef",
     "https://esm.sh/pdf-to-printer@5.6.0": "9d1af6b8e62ad76d655a6c5e4b7cd085ec967c2072e56d96f376573aea61a38b",
     "https://esm.sh/v129/pdf-to-printer@5.6.0/denonext/pdf-to-printer.mjs": "79aa4579efe1cee99a36a3f9c00cbc9eacce0b9798377a6064774a4c5775ef22"
   },
