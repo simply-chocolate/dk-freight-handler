@@ -102,6 +102,10 @@ export async function iterateDeliveryNotes() {
     return
   }
 
+  return
+
+  // Until we're out of development mode we will not reach below code.
+
   const labelsPdfData = await getLabelsForPrintPDF(consignmentIDs)
   if (!labelsPdfData) {
     return
