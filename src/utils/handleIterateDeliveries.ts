@@ -3,40 +3,14 @@ import { getConsignmentsListForPrint } from '../fragt-api-wrapper/GET-consignmen
 import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
 import { getDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
-import { getOpenOrders } from '../sap-api-wrapper/GET-OpenOrders.ts'
-import { setAddressValidation } from '../sap-api-wrapper/PATCH-SetAddressValidation.ts'
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
 import { printFileLinux } from './handlePrinting.ts'
 import { savePDF } from './savePDF.ts'
-import { sleep } from './sleep.ts'
 import { deliveryAddressIsValid } from './utils.ts'
-import { validateAddress } from './validateAddress.ts'
 
 export async function iterateDeliveryNotes() {
-  const orders = await getOpenOrders()
-  if (!orders) {
-    console.log('No open orders found')
-    return
-  } else if (orders.value.length === 0) {
-    console.log('No open orders found')
-    return
-  }
-
-  for (const order of orders.value) {
-    if (order.AddressExtension.ShipToCountry !== 'DK') {
-      continue
-    }
-    const validationResponse = await validateAddress(order.AddressExtension, order.CardCode, order.DocNum)
-    await sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
-    if (validationResponse) {
-      setAddressValidation(order.DocEntry, order.DocNum, validationResponse)
-      continue
-    }
-    setAddressValidation(order.DocEntry, order.DocNum, 'validated')
-  }
-
   const deliveryNotes = await getDeliveryNotes()
   if (!deliveryNotes) {
     return
@@ -101,8 +75,6 @@ export async function iterateDeliveryNotes() {
   if (consignmentIDs.length === 0) {
     return
   }
-
-  return
 
   // Until we're out of development mode we will not reach below code.
 

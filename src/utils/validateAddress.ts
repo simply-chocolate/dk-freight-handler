@@ -86,20 +86,31 @@ export async function validateAddress(
     address.adgangsadresse.postnummer.navn = address.adgangsadresse.postnummer.navn.toLowerCase()
 
     const errors: string[] = []
+    const errorsForTeams: string[] = []
+    let hasErrors = false
 
     if (
       addressExtension.ShipToStreet !==
       `${address.adgangsadresse.vejstykke.adresseringsnavn} ${address.adgangsadresse.husnr}`
     ) {
-      errors.push('<BR>Street name')
+      errors.push('Street name')
+      errorsForTeams.push(
+        `<BR> ShipToStreet: ${addressExtension.ShipToStreet} doesnt match with DAWA: ${address.adgangsadresse.vejstykke.adresseringsnavn} ${address.adgangsadresse.husnr}`
+      )
     }
 
     if (address.adgangsadresse.postnummer.nr !== addressExtension.ShipToZipCode) {
-      errors.push('<BR>Zip code')
+      errors.push('Zip code')
+      errorsForTeams.push(
+        `<BR> ShipToZipCode: ${addressExtension.ShipToZipCode} doesnt match with DAWA: ${address.adgangsadresse.postnummer.nr}`
+      )
     }
 
     if (address.adgangsadresse.postnummer.navn !== addressExtension.ShipToCity) {
-      errors.push('<BR>City')
+      errors.push('City')
+      errorsForTeams.push(
+        `<BR> ShipToCity: ${addressExtension.ShipToCity} doesnt match with DAWA: ${address.adgangsadresse.postnummer.navn}`
+      )
     }
 
     if (errors.length > 0) {
@@ -107,9 +118,11 @@ export async function validateAddress(
         'Address validation failed',
         `**Customer Number**: ${cardCode} <BR>
         **Order**: ${orderNumber} <BR>
-        **Errors**: ${errors.join(' ')}`
+        **Errors**: ${errorsForTeams.join(' ')}`
       )
-      return errors.join(',').replaceAll('<BR>', '')
+      return errors.join(',')
+    } else {
+      return
     }
   }
 

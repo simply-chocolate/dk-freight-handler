@@ -42,6 +42,7 @@ export async function getOpenOrders(): Promise<SapOrdersData | void> {
           "(U_CCF_DF_AddressValidation ne 'validated' or U_CCF_DF_AddressValidation eq NULL)",
           "DocumentStatus eq 'bost_Open'",
           'TransportationCode ne 14',
+          "Confirmed eq 'tYES'",
         ].join(' and '),
       },
     })
