@@ -43,9 +43,8 @@ export type SapDeliveryNoteData = {
 
 export type AddressExtension = {
   ShipToBuilding: string // Is Company Name
-  ShipToStreet: string
-  ShipToStreetNo: string
-  ShipToBlock: string
+  ShipToStreet: string // Street name, nr and floor
+  ShipToBlock: string // Port no. etc
   ShipToZipCode: string
   ShipToCity: string
   ShipToCountry: string

@@ -39,9 +39,7 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
     ],
     Receiver: {
       Name: deliveryNote.AddressExtension.ShipToBuilding,
-      Street: deliveryNote.AddressExtension.ShipToStreet
-        ? deliveryNote.AddressExtension.ShipToStreet
-        : deliveryNote.AddressExtension.ShipToBlock,
+      Street: deliveryNote.AddressExtension.ShipToStreet,
       Town: deliveryNote.AddressExtension.ShipToCity,
       ZipCode: deliveryNote.AddressExtension.ShipToZipCode,
       Country: deliveryNote.AddressExtension.ShipToCountry,
@@ -57,7 +55,8 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
     Reference1: deliveryNote.NumAtCard,
     PickupRemarks: deliveryNote.Comments,
 
-    DeliveryRemark: deliveryNote.U_CCF_DF_DeliveryRemark,
+    DeliveryRemark: deliveryNote.AddressExtension.ShipToBlock,
+    DeliveryRemark2: deliveryNote.U_CCF_DF_DeliveryRemark,
   }
 
   if (deliveryNote.U_CCF_DF_DOTDelivery !== 'N') {

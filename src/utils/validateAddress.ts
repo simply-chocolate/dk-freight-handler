@@ -21,18 +21,9 @@ export type ValidatedAddress = {
 export async function getAddressValidation(
   addressExtension: AddressExtension
 ): Promise<ValidatedAddressResult | void> {
-  let streetNr: string
   try {
-    if (addressExtension.ShipToStreetNo) {
-      streetNr = addressExtension.ShipToStreetNo
-    } else if (addressExtension.ShipToBlock) {
-      streetNr = addressExtension.ShipToBlock
-    } else {
-      streetNr = ''
-    }
-
     const res = await axios.get<ValidatedAddressResult>(
-      `https://api.dataforsyningen.dk/adresser/?q=${addressExtension.ShipToStreet} ${streetNr} ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}`
+      `https://api.dataforsyningen.dk/adresser/?q=${addressExtension.ShipToStreet} ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}`
     )
 
     return res.data
@@ -59,9 +50,6 @@ export async function validateAddress(
   if (addressExtension.ShipToCity != null) {
     addressExtension.ShipToCity = addressExtension.ShipToCity.toLowerCase()
   }
-  if (addressExtension.ShipToCountry != null) {
-    addressExtension.ShipToCountry = addressExtension.ShipToCountry.toLowerCase()
-  }
 
   const validatedAddress = await getAddressValidation(addressExtension)
 
@@ -71,9 +59,8 @@ export async function validateAddress(
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
       **Error**: No address found in DAWA <BR>
-      **ShipToStreet**: ${addressExtension.ShipToStreet} <BR>
-      **ShipToStreetNo**: ${addressExtension.ShipToStreetNo} <BR>
-      **ShipToBlock**: ${addressExtension.ShipToBlock} <BR>
+      **ShipToStreet/Address**: ${addressExtension.ShipToStreet} <BR>
+      **ShipToBlock/Port no.**: ${addressExtension.ShipToBlock} <BR>
       **ShipToZipCode**: ${addressExtension.ShipToZipCode} <BR>
       **ShipToCity**: ${addressExtension.ShipToCity} <BR>
       `
@@ -85,9 +72,8 @@ export async function validateAddress(
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
       **Error**: No address found in DAWA <BR>
-      **ShipToStreet**: ${addressExtension.ShipToStreet} <BR>
-      **ShipToStreetNo**: ${addressExtension.ShipToStreetNo} <BR>
-      **ShipToBlock**: ${addressExtension.ShipToBlock} <BR>
+      **ShipToStreet/Address**: ${addressExtension.ShipToStreet} <BR>
+      **ShipToBlock/Port no.**: ${addressExtension.ShipToBlock} <BR>
       **ShipToZipCode**: ${addressExtension.ShipToZipCode} <BR>
       **ShipToCity**: ${addressExtension.ShipToCity} <BR>
       `
@@ -101,22 +87,11 @@ export async function validateAddress(
 
     const errors: string[] = []
 
-    if (addressExtension.ShipToStreetNo == undefined && addressExtension.ShipToBlock == undefined) {
-      if (
-        addressExtension.ShipToStreet !==
-        `${address.adgangsadresse.vejstykke.adresseringsnavn} ${address.adgangsadresse.husnr}`
-      ) {
-        errors.push('<BR>StreetNo and Block are empty and Street name does not match Street + No.')
-      }
-    } else {
-      if (
-        addressExtension.ShipToStreetNo !== address.adgangsadresse.husnr &&
-        addressExtension.ShipToBlock !== address.adgangsadresse.husnr
-      ) {
-        errors.push('<BR>Neither StreetNo nor Block')
-      } else if (addressExtension.ShipToStreet !== address.adgangsadresse.vejstykke.adresseringsnavn) {
-        errors.push('<BR>Street name')
-      }
+    if (
+      addressExtension.ShipToStreet !==
+      `${address.adgangsadresse.vejstykke.adresseringsnavn} ${address.adgangsadresse.husnr}`
+    ) {
+      errors.push('<BR>Street name')
     }
 
     if (address.adgangsadresse.postnummer.nr !== addressExtension.ShipToZipCode) {
