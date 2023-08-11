@@ -17,7 +17,7 @@ async function main() {
       new Date(new Date().getTime()).toLocaleString() + ': Running the script before starting the scheduler'
     )
     await iterateOpenOrders()
-    //await iterateDeliveryNotes()
+    //  await iterateDeliveryNotes()
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')
     await logoutSap()
 
@@ -35,12 +35,12 @@ async function main() {
       await logoutSap()
     })
 
-    cron('0 */10 7-16 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': Fetching new deliveries')
-      //await iterateDeliveryNotes()
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished fetching new deliveries')
-      await logoutSap()
-    })
+    //    cron('0 */10 7-16 * * 1-5', async () => {
+    //      console.log(new Date(new Date().getTime()).toLocaleString() + ': Fetching new deliveries')
+    //      await iterateDeliveryNotes()
+    //      console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished fetching new deliveries')
+    //      await logoutSap()
+    //    })
   }
 }
 
