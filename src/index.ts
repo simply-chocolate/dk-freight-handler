@@ -22,7 +22,7 @@ async function main() {
 
     // Cron jobs
 
-    cron('0 * 8-16 * * 1-5', async () => {
+    cron('0 0 8-16 * 1-5 *', async () => {
       console.log(
         new Date(new Date().getTime()).toLocaleString() +
           ': Validating addresses on all open orders to DK that are confirmed and has not yet been validated'
