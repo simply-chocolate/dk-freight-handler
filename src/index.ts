@@ -1,8 +1,7 @@
 import 'https://deno.land/std@0.195.0/dotenv/load.ts'
-import { checkEnvs } from './utils/handleCheckingEnvs.ts'
-import { iterateDeliveryNotes } from './utils/handleIterateDeliveries.ts'
+import { cron } from 'https://deno.land/x/deno_cron@v1.0.0/cron.ts'
 import { logoutSap } from './fragt-api-wrapper/POST-logout.ts'
-import { cron, daily, monthly, weekly } from 'https://deno.land/x/deno_cron@v1.0.0/cron.ts'
+import { checkEnvs } from './utils/handleCheckingEnvs.ts'
 import { iterateOpenOrders } from './utils/handleIterateOpenOrders.ts'
 
 async function main() {
