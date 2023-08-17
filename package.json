@@ -9,6 +9,6 @@
     "@types/node": "^20.4.2"
   },
   "scripts": {
-    "start": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run --unsafely-ignore-certificate-errors src/index.ts"
+    "start": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/index.ts" 
   }
 }
