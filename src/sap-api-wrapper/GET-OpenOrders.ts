@@ -5,6 +5,7 @@ import { AddressExtension } from './GET-DeliveryNotes.ts'
 
 export type SapOrdersData = {
   value: SapOrderData[]
+  'odata.nextLink': string
 }
 
 export type SapOrderData = {
@@ -19,9 +20,8 @@ export type SapOrderData = {
   AddressExtension: AddressExtension
 }
 
-export async function getOpenOrders(): Promise<SapOrdersData | void> {
+export async function getOpenOrders(skip?: number): Promise<SapOrdersData | void> {
   const authClient = await getAuthorizedClient()
-
   try {
     const res = await authClient.get<SapOrdersData>('Orders', {
       params: {
@@ -44,6 +44,7 @@ export async function getOpenOrders(): Promise<SapOrdersData | void> {
           'TransportationCode ne 14',
           "Confirmed eq 'tYES'",
         ].join(' and '),
+        $skip: skip,
       },
     })
 
@@ -58,4 +59,24 @@ export async function getOpenOrders(): Promise<SapOrdersData | void> {
       )
     }
   }
+}
+
+export async function getAllOpenOrders(): Promise<SapOrdersData | void> {
+  const openOrders: SapOrdersData = { value: [], 'odata.nextLink': '' }
+
+  for (let page = 0; ; page++) {
+    const currentPage = await getOpenOrders(page * 20)
+    if (!currentPage) {
+      break
+    }
+    openOrders.value.push(...currentPage.value)
+
+    if (!currentPage['odata.nextLink']) {
+      break
+    } else if (currentPage['odata.nextLink'] === '') {
+      break
+    }
+  }
+
+  return openOrders
 }
