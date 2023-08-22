@@ -2,7 +2,7 @@ import { getTrackAndTraceUrl } from '../fragt-api-wrapper/GET-TrackAndTraceUrl.t
 import { getConsignmentsListForPrint } from '../fragt-api-wrapper/GET-consignmentsListForPrintPDF.ts'
 import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
-import { getDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
+import { getAllOpenDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
@@ -11,7 +11,7 @@ import { savePDF } from './savePDF.ts'
 import { deliveryAddressIsValid } from './utils.ts'
 
 export async function iterateDeliveryNotes() {
-  const deliveryNotes = await getDeliveryNotes()
+  const deliveryNotes = await getAllOpenDeliveryNotes()
   if (!deliveryNotes) {
     return
   } else if (deliveryNotes.value.length === 0) {
@@ -94,10 +94,7 @@ export async function iterateDeliveryNotes() {
 
   const labelPrinterName = Deno.env.get('PI_PRINTER_NAME_LABEL')
   if (!labelPrinterName) {
-    await sendTeamsMessage(
-      'Label printer name is undefined',
-      `Please set the environment variable PI_PRINTER_NAME_LABEL <BR>`
-    )
+    await sendTeamsMessage('Label printer name is undefined', `Please set the environment variable PI_PRINTER_NAME_LABEL <BR>`)
     return
   }
 
@@ -113,10 +110,7 @@ export async function iterateDeliveryNotes() {
 
   const consignmentListPrinterName = Deno.env.get('PI_PRINTER_NAME_CONSIGNMENTLIST')
   if (!consignmentListPrinterName) {
-    await sendTeamsMessage(
-      'Consignment list printer name is undefined',
-      `Please set the environment variable PI_PRINTER_NAME_CONSIGNMENTLIST <BR>`
-    )
+    await sendTeamsMessage('Consignment list printer name is undefined', `Please set the environment variable PI_PRINTER_NAME_CONSIGNMENTLIST <BR>`)
     return
   }
   const printConsignmentList = await printFileLinux(consignmentListPath, consignmentListPrinterName)

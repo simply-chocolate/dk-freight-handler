@@ -4,6 +4,7 @@ import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
 export type SapDeliveryNotesData = {
   value: SapDeliveryNoteData[]
+  'odata.nextLink': string
 }
 
 export type SapDeliveryNoteData = {
@@ -50,7 +51,7 @@ export type AddressExtension = {
   ShipToCountry: string
 }
 
-export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
+export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesData | void> {
   const authClient = await getAuthorizedClient()
   const now = new Date(new Date().getTime()).toISOString().split('T')[0]
 
@@ -87,6 +88,7 @@ export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
           'U_CCF_DF_NumberOfShippingProducts gt 0',
           "U_CCF_DF_AddressValidation eq 'validated'",
         ].join(' and '),
+        $skip: skip,
       },
     })
 
@@ -101,4 +103,24 @@ export async function getDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
       )
     }
   }
+}
+
+export async function getAllOpenDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
+  const openOrders: SapDeliveryNotesData = { value: [], 'odata.nextLink': '' }
+
+  for (let page = 0; ; page++) {
+    const currentPage = await getDeliveryNotes(page * 20)
+    if (!currentPage) {
+      break
+    }
+    openOrders.value.push(...currentPage.value)
+
+    if (!currentPage['odata.nextLink']) {
+      break
+    } else if (currentPage['odata.nextLink'] === '') {
+      break
+    }
+  }
+
+  return openOrders
 }
