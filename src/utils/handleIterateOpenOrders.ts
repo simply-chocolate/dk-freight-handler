@@ -23,9 +23,12 @@ export async function iterateOpenOrders() {
 
     await sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
     if (validationResponse) {
-      setAddressValidation(order.DocEntry, order.DocNum, validationResponse)
+      if (validationResponse.length > 100) {
+        validationResponse.slice(0, 100)
+      }
+      await setAddressValidation(order.DocEntry, order.DocNum, validationResponse)
       continue
     }
-    setAddressValidation(order.DocEntry, order.DocNum, 'validated')
+    await setAddressValidation(order.DocEntry, order.DocNum, 'validated')
   }
 }

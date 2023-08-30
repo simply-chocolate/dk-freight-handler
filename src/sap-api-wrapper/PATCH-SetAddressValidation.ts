@@ -2,20 +2,16 @@ import { AxiosError, AxiosResponse } from 'npm:axios@1.4.0'
 import { getAuthorizedClient } from './POST-login.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
-export async function setAddressValidation(
-  docEntry: number,
-  order: number,
-  validationString: string
-): Promise<AxiosResponse | void> {
+export async function setAddressValidation(docEntry: number, order: number, validationString: string): Promise<AxiosResponse | void> {
   const authClient = await getAuthorizedClient()
 
-  if (validationString.length > 254) {
+  if (validationString.length > 100) {
     sendTeamsMessage(
-      "Validationstring is more than 254 chars, it's truncated",
+      "Validationstring is more than 100 chars, it's truncated",
       `**Order**: ${order}<BR>
       **ValidationString**: ${validationString}<BR>`
     )
-    validationString = validationString.substring(0, 254)
+    validationString = validationString.substring(0, 100)
   }
 
   try {
