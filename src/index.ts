@@ -1,9 +1,8 @@
 import 'https://deno.land/std@0.195.0/dotenv/load.ts'
 import { cron } from 'https://deno.land/x/deno_cron@v1.0.0/cron.ts'
+import { logoutSap } from './sap-api-wrapper/POST-logout.ts'
 import { checkEnvs } from './utils/handleCheckingEnvs.ts'
 import { iterateOpenOrders } from './utils/handleIterateOpenOrders.ts'
-import { logoutSap } from './sap-api-wrapper/POST-logout.ts'
-import { getAllOpenOrders } from './sap-api-wrapper/GET-OpenOrders.ts'
 
 async function main() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works

@@ -5,6 +5,7 @@ import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 export type ValidatedAddressResult = ValidatedAddress[]
 
 export type ValidatedAddress = {
+  adressebetegnelse: string
   adgangsadresse: {
     adressebetegnelse: string
     vejstykke: {
@@ -21,7 +22,7 @@ export type ValidatedAddress = {
 export async function getAddressValidation(addressExtension: AddressExtension): Promise<ValidatedAddressResult | void> {
   try {
     const res = await axios.get<ValidatedAddressResult>(
-      `https://api.dataforsyningen.dk/adresser/?q=${addressExtension.ShipToStreet} ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}`
+      `https://api.dataforsyningen.dk/adresser/?q=${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}`
     )
 
     return res.data
@@ -44,6 +45,9 @@ export async function validateAddress(addressExtension: AddressExtension, cardCo
   if (addressExtension.ShipToCity != null) {
     addressExtension.ShipToCity = addressExtension.ShipToCity.toLowerCase()
   }
+  if (addressExtension.ShipToZipCode != null) {
+    addressExtension.ShipToZipCode = addressExtension.ShipToZipCode.toLowerCase()
+  }
 
   const validatedAddress = await getAddressValidation(addressExtension)
 
@@ -53,9 +57,7 @@ export async function validateAddress(addressExtension: AddressExtension, cardCo
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
       **Error**: No address found in DAWA <BR>
-      **ShipToStreet/Address**: ${addressExtension.ShipToStreet} <BR>
-      **ShipToZipCode**: ${addressExtension.ShipToZipCode} <BR>
-      **ShipToCity**: ${addressExtension.ShipToCity} <BR>
+      **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>
       `
     )
     return 'Address validation failed: No address found in DAWA'
@@ -65,50 +67,37 @@ export async function validateAddress(addressExtension: AddressExtension, cardCo
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
       **Error**: No address found in DAWA <BR>
-      **ShipToStreet/Address**: ${addressExtension.ShipToStreet} <BR>
-      **ShipToBlock/Port no.**: ${addressExtension.ShipToBlock} <BR>
-      **ShipToZipCode**: ${addressExtension.ShipToZipCode} <BR>
+      **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>
       `
     )
     return 'Address validation failed: No address found in DAWA'
   }
+
+  let addressMatchFound = false
+  const wrongAddresses: string[] = []
+
   for (const address of validatedAddress) {
-    address.adgangsadresse.vejstykke.adresseringsnavn = address.adgangsadresse.vejstykke.adresseringsnavn.toLowerCase()
-    address.adgangsadresse.husnr = address.adgangsadresse.husnr.toLowerCase()
-    address.adgangsadresse.postnummer.navn = address.adgangsadresse.postnummer.navn.toLowerCase()
+    address.adressebetegnelse = address.adressebetegnelse.toLowerCase()
 
-    const errors: string[] = []
-    const errorsForTeams: string[] = []
-    let hasErrors = false
-
-    if (addressExtension.ShipToStreet !== `${address.adgangsadresse.vejstykke.adresseringsnavn} ${address.adgangsadresse.husnr}`) {
-      errors.push('Street name does not match to DAWA address + house number')
-      errorsForTeams.push(
-        `<BR> ShipToStreet: ${addressExtension.ShipToStreet} doesnt match with DAWA: ${address.adgangsadresse.vejstykke.adresseringsnavn} ${address.adgangsadresse.husnr}`
-      )
-    }
-
-    if (address.adgangsadresse.postnummer.nr !== addressExtension.ShipToZipCode) {
-      errors.push('Zip code')
-      errorsForTeams.push(`<BR> ShipToZipCode: ${addressExtension.ShipToZipCode} doesnt match with DAWA: ${address.adgangsadresse.postnummer.nr}`)
-    }
-
-    if (address.adgangsadresse.postnummer.navn !== addressExtension.ShipToCity) {
-      errors.push('City')
-      errorsForTeams.push(`<BR> ShipToCity: ${addressExtension.ShipToCity} doesnt match with DAWA: ${address.adgangsadresse.postnummer.navn}`)
-    }
-
-    if (errors.length > 0) {
-      sendTeamsMessage(
-        'Address validation failed',
-        `**Customer Number**: ${cardCode} <BR>
-        **Order**: ${orderNumber} <BR>
-        **Errors**: ${errorsForTeams.join(' ')}`
-      )
-      return errors.join(',')
+    if (`${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}` !== address.adressebetegnelse) {
+      wrongAddresses.push(address.adressebetegnelse)
+      continue
     } else {
-      return
+      addressMatchFound = true
+      break
     }
+  }
+  if (!addressMatchFound) {
+    sendTeamsMessage(
+      'Address validation failed',
+      `**Customer Number**: ${cardCode} <BR>
+    **OrderNumber**: ${orderNumber} <BR>
+    **Error**: Adress don't match<BR>
+    **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>
+    **Address DAWA**: ${wrongAddresses} <BR>
+    `
+    )
+    return 'None of the addresses found in DAWA matched' + wrongAddresses
   }
 
   return

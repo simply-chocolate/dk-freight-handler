@@ -14,7 +14,7 @@ export async function iterateOpenOrders() {
   }
 
   for (const order of orders.value) {
-    if (order.AddressExtension.ShipToCountry !== 'DK') {
+    if (order.AddressExtension.ShipToCountry !== 'DK' && order.AddressExtension.ShipToCountry != null) {
       continue
     }
 

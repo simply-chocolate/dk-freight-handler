@@ -43,6 +43,8 @@ export async function getOpenOrders(skip?: number): Promise<SapOrdersData | void
           "DocumentStatus eq 'bost_Open'",
           'TransportationCode ne 14',
           "Confirmed eq 'tYES'",
+          "not startswith(CardName, 'shop.simply')",
+          // And CardName not like "shop.simply" or "amazon"
         ].join(' and '),
         $skip: skip,
       },
