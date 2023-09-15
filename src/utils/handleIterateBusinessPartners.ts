@@ -25,8 +25,9 @@ export async function iterateBusinessPartners() {
       if (address.Country !== 'DK') {
         continue
       }
-
       await sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
+
+      console.log('validating address for business partner:', businessPartner.CardCode, address.AddressName)
 
       let validationResponse = await validateBPAddress(address, businessPartner.CardCode)
       if (validationResponse.length > 254) {

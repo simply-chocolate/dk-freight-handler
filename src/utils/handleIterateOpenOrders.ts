@@ -18,6 +18,8 @@ export async function iterateOpenOrders() {
       continue
     }
 
+    console.log('validating address for order:', order.DocNum)
+
     const validationResponse = await validateDocumentAddress(order.AddressExtension, order.CardCode, order.DocNum)
 
     await sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
