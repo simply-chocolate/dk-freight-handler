@@ -3,6 +3,7 @@ import { cron } from 'https://deno.land/x/deno_cron@v1.0.0/cron.ts'
 import { logoutSap } from './sap-api-wrapper/POST-logout.ts'
 import { checkEnvs } from './utils/handleCheckingEnvs.ts'
 import { iterateOpenOrders } from './utils/handleIterateOpenOrders.ts'
+import { iterateBusinessPartners } from './utils/handleIterateBusinessPartners.ts'
 
 async function main() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
@@ -14,6 +15,8 @@ async function main() {
   } else {
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Running the script before starting the scheduler')
 
+    // Initial runs
+    await iterateBusinessPartners()
     await iterateOpenOrders()
     //  await iterateDeliveryNotes()
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')

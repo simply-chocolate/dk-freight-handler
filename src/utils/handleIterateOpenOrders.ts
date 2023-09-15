@@ -1,7 +1,7 @@
 import { getAllOpenOrders } from '../sap-api-wrapper/GET-OpenOrders.ts'
-import { setAddressValidation } from '../sap-api-wrapper/PATCH-SetAddressValidation.ts'
+import { setAddressValidationOrder } from '../sap-api-wrapper/PATCH-SetAddressValidationOrder.ts'
 import { sleep } from './sleep.ts'
-import { validateAddress } from './validateAddress.ts'
+import { validateDocumentAddress } from './validateAddress.ts'
 
 export async function iterateOpenOrders() {
   const orders = await getAllOpenOrders()
@@ -18,17 +18,9 @@ export async function iterateOpenOrders() {
       continue
     }
 
-    console.log('Validating address for order: ' + order.DocNum)
-    const validationResponse = await validateAddress(order.AddressExtension, order.CardCode, order.DocNum)
+    const validationResponse = await validateDocumentAddress(order.AddressExtension, order.CardCode, order.DocNum)
 
     await sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
-    if (validationResponse) {
-      if (validationResponse.length > 100) {
-        validationResponse.slice(0, 100)
-      }
-      await setAddressValidation(order.DocEntry, order.DocNum, validationResponse)
-      continue
-    }
-    await setAddressValidation(order.DocEntry, order.DocNum, 'validated')
+    await setAddressValidationOrder(order.DocEntry, order.DocNum, validationResponse)
   }
 }
