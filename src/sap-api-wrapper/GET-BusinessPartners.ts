@@ -34,7 +34,13 @@ export async function getActiveBusinessPartners(skip?: number): Promise<SapBusin
     const res = await authClient.get<SapBusinessPartnersData>('BusinessPartners', {
       params: {
         $select: ['CardCode', 'CardName', 'BPAddresses'].join(','),
-        $filter: ["Valid eq 'tYES'", 'ShippingType ne 14', "not startswith(CardName, 'shop.simply')", "CardType eq 'cCustomer'"].join(' and '),
+        $filter: [
+          "Valid eq 'tYES'",
+          'ShippingType ne 14',
+          "not startswith(CardName, 'shop.simply')",
+          "CardType eq 'cCustomer'",
+          "U_CCF_DF_AddressesValidated ne 'Y'",
+        ].join(' and '),
         $skip: skip,
       },
     })

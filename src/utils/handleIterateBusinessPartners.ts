@@ -15,6 +15,8 @@ export async function iterateBusinessPartners() {
   }
 
   for (const businessPartner of businessPartners.value) {
+    let allAddressesValidated = true
+
     for (const address of businessPartner.BPAddresses) {
       if (address.U_CCF_DF_AddressValidation == 'validated') {
         continue
@@ -25,7 +27,8 @@ export async function iterateBusinessPartners() {
       if (address.Country !== 'DK') {
         continue
       }
-      await sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
+
+      await sleep(1000 * 30) // Sleep for 5 seconds to let the address validation finish
 
       console.log('validating address for business partner:', businessPartner.CardCode, address.AddressName)
 
@@ -34,9 +37,11 @@ export async function iterateBusinessPartners() {
         validationResponse = validationResponse.slice(0, 254)
       }
       address.U_CCF_DF_AddressValidation = validationResponse
+      if (validationResponse != 'validated') {
+        allAddressesValidated = false
+      }
     }
-
-    await setAddressValidationBusinessPartner(businessPartner.CardCode, businessPartner.BPAddresses)
+    await setAddressValidationBusinessPartner(businessPartner.CardCode, businessPartner.BPAddresses, allAddressesValidated)
   }
 
   return

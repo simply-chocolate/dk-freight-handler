@@ -1,29 +1,12 @@
 import { AxiosError } from 'npm:axios@1.4.0'
-import { getAuthorizedClient } from './POST-login.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
-import { AddressExtension } from './GET-DeliveryNotes.ts'
+import { SapDocumentsData } from './GET-OpenOrders.ts'
+import { getAuthorizedClient } from './POST-login.ts'
 
-export type SapDocumentsData = {
-  value: SapDocumentData[]
-  'odata.nextLink': string
-}
-
-export type SapDocumentData = {
-  DocEntry: number
-  DocNum: number
-  DocDate: string
-  DocDueDate: string
-  CardCode: string
-  CardName: string
-  DocumentStatus: string
-  U_CCF_DF_AddressValidation: 'validated' | string
-  AddressExtension: AddressExtension
-}
-
-export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | void> {
+export async function getOpenDeliveryNotes(skip?: number): Promise<SapDocumentsData | void> {
   const authClient = await getAuthorizedClient()
   try {
-    const res = await authClient.get<SapDocumentsData>('Orders', {
+    const res = await authClient.get<SapDocumentsData>('DeliveryNotes', {
       params: {
         $select: [
           'DocEntry',
@@ -53,7 +36,7 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
   } catch (error) {
     if (error instanceof AxiosError) {
       sendTeamsMessage(
-        'getOpenOrders SAP request failed',
+        'getDeliveryNotes SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
           **Body**: ${JSON.stringify(error.config)}<BR>`
@@ -62,15 +45,15 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
   }
 }
 
-export async function getAllOpenOrders(): Promise<SapDocumentsData | void> {
-  const openOrders: SapDocumentsData = { value: [], 'odata.nextLink': '' }
+export async function getAllOpenDeliveryNotes(): Promise<SapDocumentsData | void> {
+  const openDeliveryNotes: SapDocumentsData = { value: [], 'odata.nextLink': '' }
 
   for (let page = 0; ; page++) {
-    const currentPage = await getOpenOrders(page * 20)
+    const currentPage = await getOpenDeliveryNotes(page * 20)
     if (!currentPage) {
       break
     }
-    openOrders.value.push(...currentPage.value)
+    openDeliveryNotes.value.push(...currentPage.value)
 
     if (!currentPage['odata.nextLink']) {
       break
@@ -79,5 +62,5 @@ export async function getAllOpenOrders(): Promise<SapDocumentsData | void> {
     }
   }
 
-  return openOrders
+  return openDeliveryNotes
 }

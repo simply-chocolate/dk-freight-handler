@@ -105,7 +105,7 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
   }
 }
 
-export async function getAllOpenDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
+export async function getAllValidatedDeliveryNotes(): Promise<SapDeliveryNotesData | void> {
   const openOrders: SapDeliveryNotesData = { value: [], 'odata.nextLink': '' }
 
   for (let page = 0; ; page++) {

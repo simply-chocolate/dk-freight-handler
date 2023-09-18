@@ -3,7 +3,7 @@ import { setAddressValidationOrder } from '../sap-api-wrapper/PATCH-SetAddressVa
 import { sleep } from './sleep.ts'
 import { validateDocumentAddress } from './validateAddress.ts'
 
-export async function iterateOpenOrders() {
+export async function validateOpenOrders() {
   const orders = await getAllOpenOrders()
   if (!orders) {
     console.log('No open orders found')
