@@ -37,11 +37,11 @@ export async function getActiveBusinessPartners(skip?: number): Promise<SapBusin
         $filter: [
           "Valid eq 'tYES'",
           'ShippingType ne 14',
-          "not startswith(CardName, 'shop.simply')",
           "CardType eq 'cCustomer'",
-          "U_CCF_DF_AddressesValidated ne 'Y'",
+          "(U_CCF_DF_AddressesValidated ne 'Y' or U_CCF_DF_AddressesValidated eq NULL)",
         ].join(' and '),
         $skip: skip,
+        $orderby: ['CreateDate desc'].join(','),
       },
     })
 
@@ -49,7 +49,7 @@ export async function getActiveBusinessPartners(skip?: number): Promise<SapBusin
   } catch (error) {
     if (error instanceof AxiosError) {
       await sendTeamsMessage(
-        'getBusinessPartners SAP request failed',
+        'getActiveBusinessPartners SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
           **Body**: ${JSON.stringify(error.config)}<BR>`
@@ -63,6 +63,7 @@ export async function getAllActiveBusinessPartners(): Promise<SapBusinessPartner
 
   for (let page = 0; ; page++) {
     const currentPage = await getActiveBusinessPartners(page * 20)
+
     if (!currentPage) {
       break
     }
@@ -73,6 +74,7 @@ export async function getAllActiveBusinessPartners(): Promise<SapBusinessPartner
     } else if (currentPage['odata.nextLink'] === '') {
       break
     }
+    console.log(`Page ${page} has nextlinke ${currentPage['odata.nextLink']}`)
   }
 
   return activeBusinessPartners

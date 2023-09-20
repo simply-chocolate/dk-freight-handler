@@ -49,6 +49,7 @@ export type AddressExtension = {
   ShipToZipCode: string
   ShipToCity: string
   ShipToCountry: string
+  U_CCF_DF_AddressValidationS?: 'validated' | string
 }
 
 export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesData | void> {

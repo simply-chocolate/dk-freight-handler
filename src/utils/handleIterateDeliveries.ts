@@ -1,17 +1,16 @@
 import { getTrackAndTraceUrl } from '../fragt-api-wrapper/GET-TrackAndTraceUrl.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
 import { getAllValidatedDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
+import { setFreightBooked } from '../sap-api-wrapper/PATCH-SetFreightBooked.ts'
 
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
-import { saveConsignmentIds } from './saveConsignmentIds.ts'
+import { writeConsignmentsList } from './handleConsignmentsList.ts'
 import { deliveryAddressIsValid } from './utils.ts'
 
 export async function iterateDeliveryNotes() {
   const deliveryNotes = await getAllValidatedDeliveryNotes()
-
-  console.log('deliveryNotes:', deliveryNotes)
 
   if (!deliveryNotes) {
     return
@@ -33,9 +32,11 @@ export async function iterateDeliveryNotes() {
           `**Customer Number**: ${deliveryNote.CardCode} <BR>
           **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
         )
+
         continue
       }
       consignmentIDs.push(deliveryNote.U_CCF_DF_ConsignmentID)
+      await setFreightBooked(deliveryNote.DocEntry, deliveryNote.DocNum)
       continue
     }
 
@@ -81,7 +82,10 @@ export async function iterateDeliveryNotes() {
     return
   }
 
-  await saveConsignmentIds(consignmentIDs, 'consignmentIDs')
+  const writeConsignmentsListResult = await writeConsignmentsList(consignmentIDs, 'booked')
+  if (writeConsignmentsListResult.type === 'error') {
+    await sendTeamsMessage('Error saving the ConsignmentList list', writeConsignmentsListResult.error)
+  }
 
   return
   // TODO: Send consignmentIDs to a txt file

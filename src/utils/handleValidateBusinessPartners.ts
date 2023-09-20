@@ -3,7 +3,7 @@ import { setAddressValidationBusinessPartner } from '../sap-api-wrapper/PATCH-Se
 import { sleep } from './sleep.ts'
 import { validateBPAddress } from './validateAddress.ts'
 
-export async function iterateBusinessPartners() {
+export async function validateBusinessPartners() {
   const businessPartners = await getAllActiveBusinessPartners()
 
   if (!businessPartners) {
@@ -13,6 +13,8 @@ export async function iterateBusinessPartners() {
     console.log('No active business partners found')
     return
   }
+
+  console.log('Found Business Partners:', businessPartners.value.length)
 
   for (const businessPartner of businessPartners.value) {
     let allAddressesValidated = true
@@ -28,8 +30,6 @@ export async function iterateBusinessPartners() {
         continue
       }
 
-      await sleep(1000 * 30) // Sleep for 5 seconds to let the address validation finish
-
       console.log('validating address for business partner:', businessPartner.CardCode, address.AddressName)
 
       let validationResponse = await validateBPAddress(address, businessPartner.CardCode)
@@ -40,8 +40,10 @@ export async function iterateBusinessPartners() {
       if (validationResponse != 'validated') {
         allAddressesValidated = false
       }
+      await sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
     }
-    await setAddressValidationBusinessPartner(businessPartner.CardCode, businessPartner.BPAddresses, allAddressesValidated)
+    await setAddressValidationBusinessPartner(businessPartner.CardCode, allAddressesValidated, businessPartner.BPAddresses)
+    await sleep(1000 * 30) // Sleep for 30 seconds to let data get sent to SAP
   }
 
   return

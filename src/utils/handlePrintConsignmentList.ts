@@ -1,20 +1,38 @@
 import { getConsignmentsListForPrint } from '../fragt-api-wrapper/GET-consignmentsListForPrintPDF.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
+import { readConsignmentsList, writeConsignmentsList } from './handleConsignmentsList.ts'
 import { printFileLinux } from './handlePrinting.ts'
 import { savePDF } from './savePDF.ts'
 
-export async function printConsignmentList(consignmentIDs: string[]) {
-  // TODO: Save consignment ids to a file, so we can print a consignemnt list at the end of each day.
-  // Then we don't need to pass consignmentIDs as a parameter to this function.
-  // When we have successfully the consignment list, we can delete the file.
+export async function printConsignmentList() {
+  const bookedConsignmentIDs = await readConsignmentsList('booked')
+  if (bookedConsignmentIDs.type === 'error') {
+    await sendTeamsMessage('Error reading the ConsignmentList list', bookedConsignmentIDs.error)
+    return
+  }
 
-  const consignmentList = await getConsignmentsListForPrint(consignmentIDs)
+  const printedConsignmentList = await readConsignmentsList('printed')
+  if (printedConsignmentList.type === 'error') {
+    await sendTeamsMessage('Error reading the ConsignmentList list', printedConsignmentList.error)
+    return
+  }
+
+  if (printedConsignmentList.data === bookedConsignmentIDs.data) {
+    console.log('The two arrays are the same')
+    return
+  }
+
+  console.log('The two arrays are not the same, so there must be a new consignment to print')
+
+  const consignmentList = await getConsignmentsListForPrint(bookedConsignmentIDs.data)
   if (!consignmentList) {
+    await sendTeamsMessage('Error getting the PDF', 'Couldnt get the consignment list')
     return
   }
 
   const consignmentListPath = await savePDF(consignmentList, 'consignment_list')
-  if (!consignmentListPath) {
+  if (consignmentListPath.type === 'error') {
+    await sendTeamsMessage('Error saving the PDF ', consignmentListPath.error)
     return
   }
 
@@ -23,8 +41,14 @@ export async function printConsignmentList(consignmentIDs: string[]) {
     await sendTeamsMessage('Consignment list printer name is undefined', `Please set the environment variable PI_PRINTER_NAME_CONSIGNMENTLIST <BR>`)
     return
   }
-  const printConsignmentList = await printFileLinux(consignmentListPath, consignmentListPrinterName)
-  if (!printConsignmentList) {
+  const printConsignmentList = await printFileLinux(consignmentListPath.data, consignmentListPrinterName)
+  if (printConsignmentList.type === 'error') {
+    await sendTeamsMessage('Error printing the PDF ', printConsignmentList.error)
     return
+  }
+
+  const printedConsignmentListResult = await writeConsignmentsList(bookedConsignmentIDs.data, 'printed')
+  if (printedConsignmentListResult.type === 'error') {
+    await sendTeamsMessage('Error saving the Printed ConsignmentList list', printedConsignmentListResult.error)
   }
 }

@@ -1,6 +1,6 @@
-import { returnType } from './returnTypes.ts'
+import { returnTypeString } from './returnTypes.ts'
 
-export function checkEnvs(): returnType {
+export function checkEnvs(): returnTypeString {
   if (Deno.env.get('SAP_URL') === '') {
     return {
       type: 'error',

@@ -1,8 +1,8 @@
-import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
+import { returnTypeString } from './returnTypes.ts'
 
-export async function printFileLinux(fileName: string, printerName: string): Promise<string | void> {
+export async function printFileLinux(fileName: string, printerName: string): Promise<returnTypeString> {
   if (Deno.build.os === 'windows') {
-    return "This function can't be used on Windows"
+    return { type: 'error', error: "This function can't be used on Windows" }
   }
   // Guide to setup GK420d on linux using CUPS: https://www.zebra.com/content/dam/zebra_new_ia/en-us/software-printer/drivers/en/third-party/ZSN108111-v4_CUPS_Installation.pdf
   const command = new Deno.Command('lp', {
@@ -13,12 +13,10 @@ export async function printFileLinux(fileName: string, printerName: string): Pro
   const child = command.spawn()
   const output = await child.output()
   if (!output) {
-    await sendTeamsMessage('Unable to get print output')
-    return
+    return { type: 'error', error: 'Unable to get print output' }
   }
   if (!output.success) {
-    await sendTeamsMessage('Print Failed', `Print Failed with code: ${output.code}`)
-    return
+    return { type: 'error', error: `Print Failed with code: ${output.code}` }
   }
 
   // manually close stdin
@@ -26,13 +24,11 @@ export async function printFileLinux(fileName: string, printerName: string): Pro
   const status = await child.status
 
   if (!status) {
-    await sendTeamsMessage('Unable to get print status')
-    return
+    return { type: 'error', error: 'Unable to get print status' }
   }
   if (!status.success) {
-    await sendTeamsMessage('Print Failed', `Print Failed with code: ${status.code}`)
-    return
+    return { type: 'error', error: `Print Failed with code: ${status.code}` }
   }
 
-  return 'success'
+  return { type: 'success', data: 'Printed successfully' }
 }

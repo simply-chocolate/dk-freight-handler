@@ -5,18 +5,26 @@ import { SapBusinessPartnerAddress } from './GET-BusinessPartners.ts'
 
 export async function setAddressValidationBusinessPartner(
   CardCode: string,
-  BPAddresses: SapBusinessPartnerAddress[],
-  allAddressesValidated: boolean
+  allAddressesValidated: boolean,
+  BPAddresses?: SapBusinessPartnerAddress[]
 ): Promise<AxiosResponse | void> {
   const authClient = await getAuthorizedClient()
-
   try {
-    const res = await authClient.patch(`BusinessPartners('${CardCode}')`, {
-      U_CCF_DF_AddressesValidated: allAddressesValidated ? 'Y' : 'N',
-      BPAddresses: BPAddresses,
-    })
+    if (BPAddresses === undefined || !allAddressesValidated) {
+      const res = await authClient.patch(`BusinessPartners('${CardCode}')`, {
+        U_CCF_DF_AddressesValidated: allAddressesValidated ? 'Y' : 'N',
+      })
 
-    return res.data
+      return res.data
+    } else {
+      const res = await authClient.patch(`BusinessPartners('${CardCode}')`, {
+        U_CCF_DF_AddressesValidated: allAddressesValidated ? 'Y' : 'N',
+        U_CCF_DF_LastSuccessValidationDate: new Date().toISOString().split('T')[0],
+        BPAddresses: BPAddresses,
+      })
+
+      return res.data
+    }
   } catch (error) {
     if (error instanceof AxiosError) {
       await sendTeamsMessage(
