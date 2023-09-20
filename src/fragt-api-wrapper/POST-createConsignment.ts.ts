@@ -70,17 +70,14 @@ export type SenderAddress = {
   ContactPersonPhone: string | '27801099'
 }
 
-export async function createConsignment(
-  body: ConsignmentBodyData,
-  deliveryNote: number
-): Promise<void | string> {
+export async function createConsignment(body: ConsignmentBodyData, deliveryNote: number): Promise<void | string> {
   const session = await getDFSession()
   try {
     const res = await session.post('v1/Consignments', body)
     return res.data.ConsignmentNumber
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'createConsignment DF request failed',
         `**DeliveryNote**: ${deliveryNote}<BR>
           **Code**: ${error.code}<BR>

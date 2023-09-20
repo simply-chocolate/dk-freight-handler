@@ -36,7 +36,7 @@ export async function getDFSession(): Promise<AxiosInstance> {
       // The response is of type SuccessDataType
     } catch (error) {
       if (error instanceof AxiosError) {
-        sendTeamsMessage(
+        await sendTeamsMessage(
           'getDFSession request failed',
           `**Code**: ${error.response?.data.error.code}<BR>
             **Error Message**: ${error.response?.data.error.message}<BR>`

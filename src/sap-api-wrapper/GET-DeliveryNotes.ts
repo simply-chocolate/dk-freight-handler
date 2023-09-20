@@ -53,7 +53,7 @@ export type AddressExtension = {
 
 export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesData | void> {
   const authClient = await getAuthorizedClient()
-  const now = new Date(new Date().getTime()).toISOString().split('T')[0]
+  //const now = new Date(new Date().getTime()).toISOString().split('T')[0]
 
   try {
     const res = await authClient.get<SapDeliveryNotesData>('DeliveryNotes', {
@@ -81,7 +81,7 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'AddressExtension',
         ].join(','),
         $filter: [
-          `DocDate eq '${now}'`,
+          `DocDate eq '2023-09-19'`,
           "U_CCF_DF_FreightBooked ne 'Y'",
           'TransportationCode ne 14',
           "U_CCF_DF_ShippingProduct ne ''",
@@ -95,7 +95,7 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
     return res.data
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'getDeliveryNotes SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${error.message}<BR>

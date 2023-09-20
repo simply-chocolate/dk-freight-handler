@@ -6,7 +6,7 @@ export async function setAddressValidationDelivery(docEntry: number, order: numb
   const authClient = await getAuthorizedClient()
 
   if (validationString.length > 100) {
-    sendTeamsMessage(
+    await sendTeamsMessage(
       "Validationstring is more than 100 chars, it's truncated",
       `**Order**: ${order}<BR>
       **ValidationString**: ${validationString}<BR>`
@@ -22,7 +22,8 @@ export async function setAddressValidationDelivery(docEntry: number, order: numb
     return res.data
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      console.log('error in setAddressValidationDelivery', error)
+      await sendTeamsMessage(
         'setAddressValidationOrder SAP request failed',
         `**Order**: ${order}<BR>
         **Code**: ${error.code}<BR>

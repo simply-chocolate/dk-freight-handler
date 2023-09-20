@@ -20,7 +20,7 @@ export async function setTrackAndTraceUrl(
     return res.data
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'setTrackAndTraceUrl SAP request failed',
         `**DeliveryNote**: ${deliveryNote}<BR>
         **Code**: ${error.code}<BR>

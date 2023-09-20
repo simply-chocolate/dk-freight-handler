@@ -35,7 +35,7 @@ export async function getOpenDeliveryNotes(skip?: number): Promise<SapDocumentsD
     return res.data
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'getDeliveryNotes SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>

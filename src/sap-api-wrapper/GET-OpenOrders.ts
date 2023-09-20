@@ -52,7 +52,7 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
     return res.data
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'getOpenOrders SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>

@@ -48,7 +48,7 @@ export async function getActiveBusinessPartners(skip?: number): Promise<SapBusin
     return res.data
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'getBusinessPartners SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>

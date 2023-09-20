@@ -15,7 +15,7 @@ export async function getConfiguration() {
     console.log(res.data)
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'getConfiguration DF request failed',
         `**Code**: ${error.response?.data.error.code}<BR>
           **Error Message**: ${error.response?.data.error.message}<BR>`

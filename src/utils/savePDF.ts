@@ -8,7 +8,7 @@ export async function savePDF(pdfData: Uint8Array, prefix: string): Promise<stri
       await Deno.writeFile(tempFilePath, pdfData)
       return tempFilePath
     } catch (error) {
-      sendTeamsMessage('Error saving the PDF ', error.message)
+      await sendTeamsMessage('Error saving the PDF ', error.message)
     }
   }
   try {
@@ -19,6 +19,6 @@ export async function savePDF(pdfData: Uint8Array, prefix: string): Promise<stri
     await Deno.writeFile(tempFilePath, pdfData)
     return tempFilePath
   } catch (error) {
-    sendTeamsMessage('Error saving the PDF', error.message)
+    await sendTeamsMessage('Error saving the PDF', error.message)
   }
 }

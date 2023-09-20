@@ -17,11 +17,11 @@ export async function validateOpenDeliveries() {
   console.log('Deliveries:', Deliveries.value.length)
 
   for (const delivery of Deliveries.value) {
+    console.log('validating address for delivery:', delivery.DocNum)
+
     if (delivery.AddressExtension.ShipToCountry !== 'DK' && delivery.AddressExtension.ShipToCountry != null) {
       continue
     }
-
-    console.log('validating address for delivery:', delivery.DocNum)
 
     const validationResponse = await validateDocumentAddress(delivery.AddressExtension, delivery.CardCode, delivery.DocNum)
 

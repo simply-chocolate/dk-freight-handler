@@ -1,17 +1,18 @@
 import { getTrackAndTraceUrl } from '../fragt-api-wrapper/GET-TrackAndTraceUrl.ts'
-import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
 import { getAllValidatedDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
 
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
-import { printFileLinux } from './handlePrinting.ts'
-import { savePDF } from './savePDF.ts'
+import { saveConsignmentIds } from './saveConsignmentIds.ts'
 import { deliveryAddressIsValid } from './utils.ts'
 
 export async function iterateDeliveryNotes() {
   const deliveryNotes = await getAllValidatedDeliveryNotes()
+
+  console.log('deliveryNotes:', deliveryNotes)
+
   if (!deliveryNotes) {
     return
   } else if (deliveryNotes.value.length === 0) {
@@ -76,11 +77,18 @@ export async function iterateDeliveryNotes() {
   }
 
   if (consignmentIDs.length === 0) {
+    console.log('No consignmentIDs to save')
     return
   }
 
-  // TODO: Send consignmentIDs to a txt file
+  await saveConsignmentIds(consignmentIDs, 'consignmentIDs')
 
+  return
+  // TODO: Send consignmentIDs to a txt file
+  // TODO: We should check if there are any more open orders that needs to be booked
+  // If everything is booked we should print the consignment list
+  // If they time is after 13.30?? we should print the consignment list
+  /*
   const labelsPdfData = await getLabelsForPrintPDF(consignmentIDs)
   if (!labelsPdfData) {
     return
@@ -101,4 +109,5 @@ export async function iterateDeliveryNotes() {
   if (!printLabel) {
     return
   }
+  */
 }

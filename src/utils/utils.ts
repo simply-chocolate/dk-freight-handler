@@ -60,37 +60,21 @@ export function setDotIntervals(deliveryDate: string, timeslot: string, dotType:
 
   // return [intervalStart, intervalEnd]
 
-  return [
-    format(intervalStart, 'yyyy-MM-dd+HH:mm:ss').replace('+', 'T'),
-    format(intervalEnd, 'yyyy-MM-dd+HH:mm:ss').replace('+', 'T'),
-  ]
+  return [format(intervalStart, 'yyyy-MM-dd+HH:mm:ss').replace('+', 'T'), format(intervalEnd, 'yyyy-MM-dd+HH:mm:ss').replace('+', 'T')]
 }
 
 export function deliveryAddressIsValid(deliveryNote: SapDeliveryNoteData): boolean {
   let addressErrors = ''
-  deliveryNote.AddressExtension.ShipToBuilding != undefined
-    ? ''
-    : (addressErrors += 'ShipToBuilding is undefined (Might be called AddressID1). <BR>')
-  deliveryNote.AddressExtension.ShipToStreet != undefined
-    ? ''
-    : (addressErrors += 'ShipToStreet is undefined <BR>')
-  deliveryNote.AddressExtension.ShipToZipCode != undefined
-    ? ''
-    : (addressErrors += 'ShipToZipCode is undefined <BR>')
-  deliveryNote.AddressExtension.ShipToCity != undefined
-    ? ''
-    : (addressErrors += 'ShipToCity is undefined <BR>')
-  deliveryNote.AddressExtension.ShipToCountry != undefined
-    ? ''
-    : (addressErrors += 'ShipToCountry is undefined <BR>')
+  deliveryNote.AddressExtension.ShipToBuilding != undefined ? '' : (addressErrors += 'ShipToBuilding is undefined (Might be called AddressID1). <BR>')
+  deliveryNote.AddressExtension.ShipToStreet != undefined ? '' : (addressErrors += 'ShipToStreet is undefined <BR>')
+  deliveryNote.AddressExtension.ShipToZipCode != undefined ? '' : (addressErrors += 'ShipToZipCode is undefined <BR>')
+  deliveryNote.AddressExtension.ShipToCity != undefined ? '' : (addressErrors += 'ShipToCity is undefined <BR>')
+  deliveryNote.AddressExtension.ShipToCountry != undefined ? '' : (addressErrors += 'ShipToCountry is undefined <BR>')
 
   if (addressErrors !== '') {
     sendTeamsMessage(
       'Delivery address could not be validated',
-      'DeliveryNote: **' +
-        deliveryNote.DocNum +
-        '**has the following errors in the address: <BR>' +
-        addressErrors
+      'DeliveryNote: **' + deliveryNote.DocNum + '**has the following errors in the address: <BR>' + addressErrors
     )
     return false
   }

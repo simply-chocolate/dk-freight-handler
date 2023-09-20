@@ -50,7 +50,7 @@ export async function getAuthorizedClient(): Promise<AxiosInstance> {
       })
     } catch (error) {
       if (error instanceof AxiosError) {
-        sendTeamsMessage(
+        await sendTeamsMessage(
           'getAuthorizedClient SAP request failed',
           `**Code**: ${error.response?.data.error.code}<BR>
             **Error Message**: ${error.response?.data.error.message.value}<BR>`

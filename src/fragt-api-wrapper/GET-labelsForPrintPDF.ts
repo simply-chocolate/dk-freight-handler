@@ -17,7 +17,7 @@ export async function getLabelsForPrintPDF(consignmentNumbers: string[]): Promis
     return new Uint8Array(res.data)
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'createConsignment DF request failed',
         `**consignmentNumbers**: ${consignmentNumbers.join(', ')}<BR>
           **Code**: ${error.code}<BR>

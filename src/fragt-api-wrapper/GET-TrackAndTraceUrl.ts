@@ -6,10 +6,7 @@ type TrackAndTraceUrlData = {
   Url: string
 }
 
-export async function getTrackAndTraceUrl(
-  consignmentID: string,
-  deliveryNote: number
-): Promise<void | string> {
+export async function getTrackAndTraceUrl(consignmentID: string, deliveryNote: number): Promise<void | string> {
   const session = await getDFSession()
 
   try {
@@ -21,7 +18,7 @@ export async function getTrackAndTraceUrl(
     return res.data.Url
   } catch (error) {
     if (error instanceof AxiosError) {
-      sendTeamsMessage(
+      await sendTeamsMessage(
         'getTrackAndTraceUrl DF request failed',
         `**DeliveryNote**: ${deliveryNote}<BR>
         **Code**: ${error.response?.data.error.code}<BR>

@@ -18,13 +18,15 @@ async function main() {
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Running the script before starting the scheduler')
 
     // Initial runs
-    await validateOpenOrders()
+    //await validateOpenOrders()
 
     await validateOpenDeliveries() // This function doesnt make sense in a produktion enviorment since we're not able to change the address in SAP.
 
+    console.log('Finished validating open deliveries')
+
     await iterateDeliveryNotes()
 
-    await iterateBusinessPartners()
+    //await iterateBusinessPartners()
 
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')
     await logoutSap()
