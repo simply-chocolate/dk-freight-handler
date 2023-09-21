@@ -9,6 +9,7 @@ import { printConsignmentList } from './utils/handlePrintConsignmentList.ts'
 import { validateBusinessPartners } from './utils/handleValidateBusinessPartners.ts'
 import { validateOpenDeliveries } from './utils/handleValidateOpenDeliveries.ts'
 import { validateOpenOrders } from './utils/handleValidateOpenOrders.ts'
+import { returnDateWithHours } from './utils/utils.ts'
 
 async function main() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
@@ -22,35 +23,26 @@ async function main() {
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Running the script before starting the scheduler')
     // Initial runs
 
-    await validateOpenOrders()
-    await validateOpenDeliveries() // This function doesnt make sense in a produktion enviorment since we're not able to change the address in SAP.
+    //await validateOpenOrders()
+    //await validateOpenDeliveries() // TODO: DELETE THIS FUNCTION AND ALL TRACES.
     //await iterateDeliveryNotes()
     //await handleCheckValidatedBusinessPartners()
     //await validateBusinessPartners()
-    await logoutSap()
+    //await logoutSap()
 
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')
 
-    // REQUIED CRON JOBS
-    // Every 10 minutes between 7 and 17 on weekdays
-    // TODO: Validate open orders
-    // TODO: Create field "U_CCF_DF_LastValidatedAt" and set it to "new Date().getTime()" when validating an order.
-    // Change the query for orders for validation to only get orders where "U_CCF_DF_LastValidatedAt" is null or where "U_CCF_DF_LastValidatedAt" is less than "UpdateTime"
-    // If possible we'd like U_CCF_DF_LastValidatedAt to be a datetime. If thats not possible we'll just make it a time instead.
-
-    // Cron jobs
     // VALIDATING BUSINESS PARTNERS
-    /*
-      cron('0 0 14 * * 1-5', async () => {
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
-        await handleCheckValidatedBusinessPartners()
-        await validateBusinessPartners()
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
-        await logoutSap()
-      })
-    */
+    cron('0 0 4 * * 1-5', async () => {
+      console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
+      await handleCheckValidatedBusinessPartners()
+      await validateBusinessPartners()
+      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
+      await logoutSap()
+    })
+
     // VALIDATING OPEN ORDERS
-    cron('0 0 7-17 * * 1-5', async () => {
+    cron('0 */10 7-17 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
       await validateOpenOrders()
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')

@@ -18,8 +18,15 @@ export type SapDocumentData = {
   DocumentStatus: string
   U_CCF_DF_AddressValidation: 'validated' | string
   AddressExtension: AddressExtension
+  U_CCF_DF_ValidationTime: string
+  U_CCF_DF_ValidationDate: string
+  UpdateTime: string
 }
 
+// TODO: Test if this works as intended
+// TODO: What happens if U_CCF_DF_ValidationTime is null?
+// TODO: What happens if U_CCF_DF_ValidationDate is null?
+// TODO: Remove the fields not needed when done testing
 export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | void> {
   const authClient = await getAuthorizedClient()
   try {
@@ -37,6 +44,9 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
           'U_CCF_DF_AddressValidation',
           'DocumentStatus',
           'AddressExtension',
+          'U_CCF_DF_ValidationTime',
+          'U_CCF_DF_ValidationDate',
+          'UpdateTime',
         ].join(','),
         $filter: [
           "(U_CCF_DF_AddressValidation ne 'validated' or U_CCF_DF_AddressValidation eq NULL)",
@@ -44,6 +54,8 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
           'TransportationCode ne 14',
           "Confirmed eq 'tYES'",
           "not startswith(CardName, 'shop.simply')",
+          'UpdateTime gt U_CCF_DF_ValidationTime',
+          'UpdateDate ge U_CCF_DF_ValidationDate',
         ].join(' and '),
         $skip: skip,
       },
