@@ -14,8 +14,6 @@ export async function validateOpenDeliveries() {
     return
   }
 
-  console.log('Deliveries:', Deliveries.value.length)
-
   for (const delivery of Deliveries.value) {
     if (delivery.AddressExtension.ShipToCountry !== 'DK' && delivery.AddressExtension.ShipToCountry != null) {
       continue

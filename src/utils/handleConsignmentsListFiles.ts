@@ -10,12 +10,14 @@ export async function writeConsignmentsList(consignmentIDs: string[], prefix: 'b
     if (consignmentIDs.includes(consignmentID)) {
       continue
     }
+    if (consignmentID === '') {
+      continue
+    }
     consignmentIDs.push(consignmentID)
   }
 
   try {
-    const tempFilePath = `./src/cache/${prefix}_ConsignmentsList.txt`
-    await Deno.writeTextFile(tempFilePath, consignmentIDs.join(','))
+    await Deno.writeTextFile(`./src/cache/${prefix}_ConsignmentsList.txt`, consignmentIDs.join(','))
   } catch (error) {
     return { type: 'error', error: error.message }
   }
@@ -26,9 +28,6 @@ export async function writeConsignmentsList(consignmentIDs: string[], prefix: 'b
 export async function readConsignmentsList(prefix: 'booked' | 'printed'): Promise<returnTypeStringArray> {
   try {
     const textFileContents = await Deno.readTextFile(`./src/cache/${prefix}_ConsignmentsList.txt`)
-    if (!textFileContents) {
-      return { type: 'error', error: `Couldnt read the ${prefix} consignment list` }
-    }
 
     return { type: 'success', data: textFileContents.split(',') }
   } catch (error) {
@@ -43,4 +42,19 @@ export async function readConsignmentsList(prefix: 'booked' | 'printed'): Promis
       return { type: 'error', error: error.message }
     }
   }
+}
+
+export async function emptyConsignmentLists(): Promise<returnTypeString> {
+  try {
+    await Deno.writeTextFile(`./src/cache/booked_ConsignmentsList.txt`, '')
+  } catch (error) {
+    return { type: 'error', error: 'error resetting booked_ConsignmentsList. Error: ' + error.message }
+  }
+  try {
+    await Deno.writeTextFile(`./src/cache/printed_ConsignmentsList.txt`, '')
+  } catch (error) {
+    return { type: 'error', error: 'error resetting printed_ConsignmentsList. Error: ' + error.message }
+  }
+
+  return { type: 'success', data: 'Emptied consignment lists' }
 }

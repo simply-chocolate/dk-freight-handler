@@ -10,9 +10,6 @@ export type SapBusinessPartnersData = {
 export type SapBusinessPartnerData = {
   CardCode: string
   CardName: string
-  // TODO: Add a field on BusinessPartner Level to indicate if an address needs validation. Default should be Yes.
-  // TODO: Add a field on BusinessPartner Level to indicate when an address was last validated.
-  // TODO: Add a function that checks if a customer was updated later than the address was last validated.
   BPAddresses: SapBusinessPartnerAddress[]
 }
 
@@ -74,7 +71,6 @@ export async function getAllActiveBusinessPartners(): Promise<SapBusinessPartner
     } else if (currentPage['odata.nextLink'] === '') {
       break
     }
-    console.log(`Page ${page} has nextlinke ${currentPage['odata.nextLink']}`)
   }
 
   return activeBusinessPartners

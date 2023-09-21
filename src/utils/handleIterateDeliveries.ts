@@ -5,22 +5,24 @@ import { setFreightBooked } from '../sap-api-wrapper/PATCH-SetFreightBooked.ts'
 
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
+import { writeConsignmentsList } from './handleConsignmentsListFiles.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
-import { writeConsignmentsList } from './handleConsignmentsList.ts'
 import { deliveryAddressIsValid } from './utils.ts'
 
 export async function iterateDeliveryNotes() {
   const deliveryNotes = await getAllValidatedDeliveryNotes()
 
   if (!deliveryNotes) {
+    console.log('delivery notes doesnt exist')
     return
   } else if (deliveryNotes.value.length === 0) {
+    console.log('No delivery notes to iterate through')
     return
   }
 
-  console.log('amount of deliveryNotes:', deliveryNotes.value.length)
-
   const consignmentIDs: string[] = []
+
+  console.log("Let's iterate through the delivery notes and book some freight!")
 
   for (const deliveryNote of deliveryNotes.value) {
     console.log('deliveryNote:', deliveryNote.DocNum)

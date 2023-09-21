@@ -3,7 +3,7 @@ import { setAddressValidationBusinessPartner } from '../sap-api-wrapper/PATCH-Se
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
 // Checks already validated business partners to see if they've been updated since last validation
-export async function handleValidatedCheckBusinessPartners() {
+export async function handleCheckValidatedBusinessPartners() {
   const businessPartners = await getValidatedBusinessPartners()
 
   if (!businessPartners) {
@@ -15,6 +15,8 @@ export async function handleValidatedCheckBusinessPartners() {
   }
 
   for (const businessPartner of businessPartners.value) {
+    console.log("Checking if validated business partner's data has been updated since last validation:", businessPartner.CardCode)
+
     if (businessPartner.U_CCF_DF_LastSuccessValidationDate >= businessPartner.UpdateDate) {
       await sendTeamsMessage(
         'Business Partner has not been updated since last validation',

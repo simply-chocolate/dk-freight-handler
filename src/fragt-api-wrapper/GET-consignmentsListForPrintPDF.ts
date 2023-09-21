@@ -22,7 +22,7 @@ export async function getConsignmentsListForPrint(consignmentNumbers: string[]):
         `**consignmentNumbers**: ${consignmentNumbers.join(', ')}<BR>
           **Code**: ${error.code}<BR>
           **Error Message**: ${error.message}<BR>
-          **Body**: ${JSON.stringify(error.config?.data)}<BR>
+          **Body**: ${JSON.stringify(error.config)}<BR>
           `
       )
     }

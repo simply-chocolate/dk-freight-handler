@@ -1,6 +1,6 @@
 import { getConsignmentsListForPrint } from '../fragt-api-wrapper/GET-consignmentsListForPrintPDF.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
-import { readConsignmentsList, writeConsignmentsList } from './handleConsignmentsList.ts'
+import { readConsignmentsList, writeConsignmentsList } from './handleConsignmentsListFiles.ts'
 import { printFileLinux } from './handlePrinting.ts'
 import { savePDF } from './savePDF.ts'
 
@@ -17,12 +17,18 @@ export async function printConsignmentList() {
     return
   }
 
-  if (printedConsignmentList.data === bookedConsignmentIDs.data) {
-    console.log('The two arrays are the same')
-    return
+  let hasDiff = false
+  for (const consignmentID of bookedConsignmentIDs.data) {
+    if (!printedConsignmentList.data.includes(consignmentID)) {
+      hasDiff = true
+      break
+    }
   }
 
-  console.log('The two arrays are not the same, so there must be a new consignment to print')
+  if (!hasDiff) {
+    console.log('No new consignments to print')
+    return
+  }
 
   const consignmentList = await getConsignmentsListForPrint(bookedConsignmentIDs.data)
   if (!consignmentList) {

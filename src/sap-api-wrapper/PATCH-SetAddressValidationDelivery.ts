@@ -6,11 +6,6 @@ export async function setAddressValidationDelivery(docEntry: number, order: numb
   const authClient = await getAuthorizedClient()
 
   if (validationString.length > 100) {
-    await sendTeamsMessage(
-      "Validationstring is more than 100 chars, it's truncated",
-      `**Order**: ${order}<BR>
-      **ValidationString**: ${validationString}<BR>`
-    )
     validationString = validationString.substring(0, 100)
   }
 
