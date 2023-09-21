@@ -24,7 +24,7 @@ async function main() {
 
     await validateOpenOrders()
     await validateOpenDeliveries() // This function doesnt make sense in a produktion enviorment since we're not able to change the address in SAP.
-    await iterateDeliveryNotes()
+    //await iterateDeliveryNotes()
     //await handleCheckValidatedBusinessPartners()
     //await validateBusinessPartners()
     await logoutSap()
@@ -40,14 +40,15 @@ async function main() {
 
     // Cron jobs
     // VALIDATING BUSINESS PARTNERS
-    cron('0 0 14 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
-      await handleCheckValidatedBusinessPartners()
-      await validateBusinessPartners()
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
-      await logoutSap()
-    })
-
+    /*
+      cron('0 0 14 * * 1-5', async () => {
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
+        await handleCheckValidatedBusinessPartners()
+        await validateBusinessPartners()
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
+        await logoutSap()
+      })
+    */
     // VALIDATING OPEN ORDERS
     cron('0 0 7-17 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
@@ -55,28 +56,30 @@ async function main() {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
       await logoutSap()
     })
-
     // BOOKING FREIGHT AND PRINTING LABELS
-    cron('0 */5 7-15 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': BOOKING FREIGHT AND PRINTING LABELS')
-      await iterateDeliveryNotes()
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED BOOKING FREIGHT AND PRINTING LABELS')
-      await logoutSap()
-    })
-
+    // cron('0 */5 7-15 * * 1-5', async () => {
+    /*
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': BOOKING FREIGHT AND PRINTING LABELS')
+        await iterateDeliveryNotes()
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED BOOKING FREIGHT AND PRINTING LABELS')
+        await logoutSap()
+      })
+    */
     // PRINTING CONSIGNMENT LIST
-    cron('0 */10 14 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': PRINTING CONSIGNMENT LIST')
+    //cron('0 */10 14 * * 1-5', async () => {
+    /*  console.log(new Date(new Date().getTime()).toLocaleString() + ': PRINTING CONSIGNMENT LIST')
       await printConsignmentList()
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED PRINTING CONSIGNMENT LIST')
     })
-
+    */
     // EMPTYING THE CONSIGNMENT LIST TXT TILES
+    /*
     cron('0 0 20 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': EMPTYING THE CONSIGNMENT LIST TXT TILES')
       await emptyConsignmentLists()
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED EMPTYING THE CONSIGNMENT LIST TXT TILES')
     })
+    */
   }
 }
 
