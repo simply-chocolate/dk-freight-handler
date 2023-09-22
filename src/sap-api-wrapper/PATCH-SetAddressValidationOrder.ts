@@ -12,8 +12,8 @@ export async function setAddressValidationOrder(docEntry: number, order: number,
   try {
     const res = await authClient.patch(`Orders(${docEntry})`, {
       U_CCF_DF_AddressValidation: validationString,
-      U_U_CCF_DF_ValidationTime: new Date().toISOString().split('T')[1].split('.')[0],
-      U_U_CCF_DF_ValidationDate: new Date().toISOString().split('T')[0],
+      U_CCF_DF_ValidationTime: new Date(new Date().setHours(new Date().getHours() + 2, new Date().getMinutes() + 5)).toISOString().split('T')[1].split('.')[0],
+      U_CCF_DF_ValidationDate: new Date().toISOString().split('T')[0],
     })
 
     return res.data

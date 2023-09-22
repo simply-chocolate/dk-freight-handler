@@ -54,7 +54,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
 
   if (!validatedAddress) {
     await sendTeamsMessage(
-      'Address validation failed',
+      'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
       **Error**: No address found in DAWA <BR>
@@ -63,7 +63,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
     return 'Address validation failed: No address found in DAWA'
   } else if (validatedAddress.length === 0) {
     await sendTeamsMessage(
-      'Address validation failed',
+      'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
       **Error**: No address found in DAWA <BR>
@@ -88,7 +88,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
   }
   if (!addressMatchFound) {
     await sendTeamsMessage(
-      'Address validation failed',
+      'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
       **Error**: Adress don't match<BR>
@@ -125,7 +125,7 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
 
   if (!validatedAddress) {
     await sendTeamsMessage(
-      'Address validation failed',
+      'Business Partner Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **AddressName**: ${address.AddressName} <BR>
       **Error**: No address found in DAWA <BR>

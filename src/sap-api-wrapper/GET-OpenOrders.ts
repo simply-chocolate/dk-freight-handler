@@ -21,6 +21,7 @@ export type SapDocumentData = {
   U_CCF_DF_ValidationTime: string
   U_CCF_DF_ValidationDate: string
   UpdateTime: string
+  UpdateDate: string
 }
 
 // TODO: Test if this works as intended
@@ -47,6 +48,7 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
           'U_CCF_DF_ValidationTime',
           'U_CCF_DF_ValidationDate',
           'UpdateTime',
+          'UpdateDate',
         ].join(','),
         $filter: [
           "(U_CCF_DF_AddressValidation ne 'validated' or U_CCF_DF_AddressValidation eq NULL)",
@@ -54,8 +56,7 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
           'TransportationCode ne 14',
           "Confirmed eq 'tYES'",
           "not startswith(CardName, 'shop.simply')",
-          'UpdateTime gt U_CCF_DF_ValidationTime',
-          'UpdateDate ge U_CCF_DF_ValidationDate',
+          '(UpdateDate ge U_CCF_DF_ValidationDate or U_CCF_DF_ValidationDate eq NULL)',
         ].join(' and '),
         $skip: skip,
       },

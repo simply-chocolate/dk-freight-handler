@@ -25,6 +25,13 @@ export async function validateOpenOrders() {
       continue
     }
 
+    if (order.U_CCF_DF_ValidationTime) {
+      if (order.U_CCF_DF_ValidationTime > order.UpdateTime) {
+        console.log('Order hasnt been changed after last validation: ', order.DocNum, ' skipping...')
+        continue
+      }
+    }
+
     console.log('DAWA validating address for order:', order.DocNum)
 
     const validationResponse = await validateDocumentAddress(order.AddressExtension, order.CardCode, order.DocNum)
