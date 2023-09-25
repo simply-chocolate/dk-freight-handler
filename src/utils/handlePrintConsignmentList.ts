@@ -7,13 +7,13 @@ import { savePDF } from './savePDF.ts'
 export async function printConsignmentList() {
   const bookedConsignmentIDs = await readConsignmentsList('booked')
   if (bookedConsignmentIDs.type === 'error') {
-    await sendTeamsMessage('Error reading the ConsignmentList list', bookedConsignmentIDs.error)
+    await sendTeamsMessage('Error reading the Booked ConsignmentList list', bookedConsignmentIDs.error)
     return
   }
 
   const printedConsignmentList = await readConsignmentsList('printed')
   if (printedConsignmentList.type === 'error') {
-    await sendTeamsMessage('Error reading the ConsignmentList list', printedConsignmentList.error)
+    await sendTeamsMessage('Error reading the Printed ConsignmentList list', printedConsignmentList.error)
     return
   }
 

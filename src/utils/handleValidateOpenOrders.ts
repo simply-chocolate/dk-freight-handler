@@ -20,19 +20,19 @@ export async function validateOpenOrders() {
     if (order.AddressExtension.U_CCF_DF_AddressValidationS === 'validated') {
       // This will save resources since we don't have to validate the address again
       // It does however require that we're 100% certain that the address on the order is validated, which we should be with the current setup.
-      console.log('Address validated on BP for order:', order.DocNum, 'skipping...')
+      console.log(new Date(new Date().getTime()).toLocaleString() + ': Address validated on BP for order:', order.DocNum, 'skipping...')
       await setAddressValidationOrder(order.DocEntry, order.DocNum, 'validated')
       continue
     }
 
     if (order.U_CCF_DF_ValidationTime) {
       if (order.U_CCF_DF_ValidationTime > order.UpdateTime) {
-        console.log('Order hasnt been changed after last validation: ', order.DocNum, ' skipping...')
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': Order hasnt been changed after last validation: ', order.DocNum, ' skipping...')
         continue
       }
     }
 
-    console.log('DAWA validating address for order:', order.DocNum)
+    console.log(new Date(new Date().getTime()).toLocaleString() + ': DAWA validating address order:', order.DocNum, order.AddressExtension.ShipToBuilding)
 
     const validationResponse = await validateDocumentAddress(order.AddressExtension, order.CardCode, order.DocNum)
 

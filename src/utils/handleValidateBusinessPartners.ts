@@ -30,7 +30,7 @@ export async function validateBusinessPartners() {
         continue
       }
 
-      console.log('validating address for business partner:', businessPartner.CardCode, address.AddressName)
+      console.log(new Date(new Date().getTime()).toLocaleString() + ': DAWA validating address BP:', businessPartner.CardCode, address.AddressName)
 
       let validationResponse = await validateBPAddress(address, businessPartner.CardCode)
       if (validationResponse.length > 254) {

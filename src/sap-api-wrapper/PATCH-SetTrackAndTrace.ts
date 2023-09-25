@@ -13,7 +13,7 @@ export async function setTrackAndTraceUrl(
   try {
     const res = await authClient.patch(`DeliveryNotes(${docEntry})`, {
       U_CCF_DF_TrackAndTrace: trackAndTraceUrl,
-      //TODO: uncomment U_CCF_DF_FreightBooked: 'Y',
+      U_CCF_DF_FreightBooked: 'Y',
       U_CCF_DF_ConsignmentID: consignmentID,
     })
 

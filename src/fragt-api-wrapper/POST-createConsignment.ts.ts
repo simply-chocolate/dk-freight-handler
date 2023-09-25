@@ -34,7 +34,12 @@ export type ConsignmentBodyData = {
   ]
 
   SenderReference: number
-  Reference1?: string // For numAtCard
+  Reference1?: string // Concats the below but has a max length of 70
+  Reference2?: string // For numAtCard
+  Reference3?: string // For Block (Delivery)
+  Reference4?: string // For  U_BOYX_EKomm
+  Reference5?: string // For U_CCF_DF_DeliveryRemark
+
   Sender: SenderAddress
   PickUp: SenderAddress
 

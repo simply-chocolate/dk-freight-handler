@@ -19,6 +19,9 @@ export type SapDeliveryNoteData = {
   DocumentStatus: string
   Address: string
 
+  U_BOYX_EKomm: string
+  ContactPersonCode: number
+
   U_CCF_DF_ShippingProduct: 'KT1' | 'PL1' | 'PL2' | 'PL4'
   U_CCF_DF_NumberOfShippingProducts: number /* DEFAULT EMPTY - IF EMPTY: ERROR */
   U_CCF_DF_ExchangePallet: 'N' | 'Y' /* DEFAULT */
@@ -68,6 +71,8 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'CardName',
           'NumAtCard',
           'Comments',
+          'ContactPersonCode',
+          'U_BOYX_EKomm',
           'U_CCF_DF_ShippingProduct',
           'U_CCF_DF_NumberOfShippingProducts',
           'U_CCF_DF_ExchangePallet',

@@ -23,6 +23,9 @@ async function main() {
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Running the script before starting the scheduler')
     // Initial runs
 
+    // TODO: Sæt "Test" på fragt labels mens vi teste
+    // TODO: Ref felt skal indeholde Vores Ordrenummer, Deres PO og en evt. Att: Person (Tages fra Ekstern Kommentar)
+
     //await validateOpenOrders()
     //await validateOpenDeliveries() // TODO: DELETE THIS FUNCTION AND ALL TRACES.
     //await iterateDeliveryNotes()
@@ -49,29 +52,26 @@ async function main() {
       await logoutSap()
     })
     // BOOKING FREIGHT AND PRINTING LABELS
-    // cron('0 */5 7-15 * * 1-5', async () => {
-    /*
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': BOOKING FREIGHT AND PRINTING LABELS')
-        await iterateDeliveryNotes()
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED BOOKING FREIGHT AND PRINTING LABELS')
-        await logoutSap()
-      })
-    */
+    cron('0 */5 7-15 * * 1-5', async () => {
+      console.log(new Date(new Date().getTime()).toLocaleString() + ': BOOKING FREIGHT AND PRINTING LABELS')
+      await iterateDeliveryNotes()
+      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED BOOKING FREIGHT AND PRINTING LABELS')
+      await logoutSap()
+    })
+
     // PRINTING CONSIGNMENT LIST
-    //cron('0 */10 14 * * 1-5', async () => {
-    /*  console.log(new Date(new Date().getTime()).toLocaleString() + ': PRINTING CONSIGNMENT LIST')
+    cron('0 */10 14 * * 1-5', async () => {
+      console.log(new Date(new Date().getTime()).toLocaleString() + ': PRINTING CONSIGNMENT LIST')
       await printConsignmentList()
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED PRINTING CONSIGNMENT LIST')
     })
-    */
+
     // EMPTYING THE CONSIGNMENT LIST TXT TILES
-    /*
     cron('0 0 20 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': EMPTYING THE CONSIGNMENT LIST TXT TILES')
       await emptyConsignmentLists()
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED EMPTYING THE CONSIGNMENT LIST TXT TILES')
     })
-    */
   }
 }
 

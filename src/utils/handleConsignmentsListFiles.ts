@@ -6,18 +6,16 @@ export async function writeConsignmentsList(consignmentIDs: string[], prefix: 'b
     return { type: 'error', error: bookedConsignmentsList.error }
   }
 
-  for (const consignmentID of bookedConsignmentsList.data) {
-    if (consignmentIDs.includes(consignmentID)) {
-      continue
-    }
-    if (consignmentID === '') {
-      continue
-    }
-    consignmentIDs.push(consignmentID)
+  const newlyBookedConsignments = consignmentIDs.filter((consignmentID) => !bookedConsignmentsList.data.includes(consignmentID))
+  if (newlyBookedConsignments.length === 0) {
+    return { type: 'success', data: 'No new consignments to add' }
+  }
+  for (const newlyBookedConsignment of newlyBookedConsignments) {
+    bookedConsignmentsList.data.push(newlyBookedConsignment)
   }
 
   try {
-    await Deno.writeTextFile(`./src/cache/${prefix}_ConsignmentsList.txt`, consignmentIDs.join(','))
+    await Deno.writeTextFile(`./src/cache/${prefix}_ConsignmentsList.txt`, bookedConsignmentsList.data.join(','))
   } catch (error) {
     return { type: 'error', error: error.message }
   }
