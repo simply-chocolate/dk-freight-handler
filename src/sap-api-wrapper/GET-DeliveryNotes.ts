@@ -59,8 +59,6 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
   const authClient = await getAuthorizedClient()
   const now = new Date(new Date().getTime()).toISOString().split('T')[0]
 
-  ;('https://bhsst02.bithosting.org:50000/b1s/v1/$crossjoin(DeliveryNotes,Orders,BusinessPartners)?$expand=Order($select=DocEntry,DocNum),BusinessPartners($select=CardCode)&$filter')
-
   try {
     const res = await authClient.get<SapDeliveryNotesData>('DeliveryNotes', {
       params: {
@@ -88,8 +86,7 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'DocumentLines',
           'AddressExtension',
         ].join(','),
-        $filter: 'DocNum eq 108396 or DocNum eq 108397',
-        /*$filter: [
+        $filter: [
           `DocDate eq ${now}`,
           "U_CCF_DF_FreightBooked ne 'Y'",
           'TransportationCode ne 14',
@@ -97,7 +94,6 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'U_CCF_DF_NumberOfShippingProducts gt 0',
           "U_CCF_DF_AddressValidation eq 'validated'",
         ].join(' and '),
-        */
         $skip: skip,
       },
     })
