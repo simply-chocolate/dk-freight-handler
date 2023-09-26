@@ -95,7 +95,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
       **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>
       **Address DAWA**: ${wrongAddresses.join('<BR>')}`
     )
-    return 'None of the addresses found in DAWA matched' + wrongAddresses
+    return 'None of the addresses found in DAWA matched: ' + wrongAddresses
   }
 
   return 'validated'
