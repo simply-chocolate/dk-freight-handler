@@ -3,7 +3,7 @@ import { SapDeliveryNoteData } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { returnDateWithHours, setDotIntervals } from './utils.ts'
 
-export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBodyData {
+export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData, orderNumber: number): ConsignmentBodyData {
   const senderAddress: SenderAddress = {
     Name: 'Copenhagen Chocolate Factory ApS',
     Street: 'Amager Landevej 123',
@@ -19,7 +19,7 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
   for (const documentLine of deliveryNote.DocumentLines) {
     totalWeight += documentLine.Weight1
   }
-  let reference = ''
+  let reference = 'Følgeseddel: ' + deliveryNote.DocNum + '\n'
   let reference1 = ''
   let reference2 = ''
   let reference3 = ''
@@ -38,8 +38,10 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
   if (deliveryNote.U_CCF_DF_DeliveryRemark != null) {
     reference += '\n' + deliveryNote.U_CCF_DF_DeliveryRemark
   }
+
+  reference1 = reference.substring(0, 70)
+
   if (reference.length > 70) {
-    reference1 = reference.substring(0, 70)
     reference2 = reference.substring(70, 140)
     if (reference.length > 140) {
       reference3 = reference.substring(140, 210)
@@ -85,8 +87,8 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData): ConsignmentBo
     },
     Initiator: senderAddress,
     Sender: senderAddress,
-    SenderReference: deliveryNote.DocNum,
-    Reference1: '####TEST####' + reference1.substring(0, 70 - 16), // TODO: Remove "TEST" when in production
+    SenderReference: orderNumber,
+    Reference1: reference1,
     Reference2: reference2,
     Reference3: reference3,
     Reference4: reference4,

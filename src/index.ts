@@ -7,9 +7,9 @@ import { emptyConsignmentLists } from './utils/handleConsignmentsListFiles.ts'
 import { iterateDeliveryNotes } from './utils/handleIterateDeliveries.ts'
 import { printConsignmentList } from './utils/handlePrintConsignmentList.ts'
 import { validateBusinessPartners } from './utils/handleValidateBusinessPartners.ts'
-import { validateOpenDeliveries } from './utils/handleValidateOpenDeliveries.ts'
 import { validateOpenOrders } from './utils/handleValidateOpenOrders.ts'
 import { returnDateWithHours } from './utils/utils.ts'
+import { getDFSession } from './fragt-api-wrapper/POST-login.ts'
 
 async function main() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
@@ -22,12 +22,7 @@ async function main() {
   } else {
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Running the script before starting the scheduler')
     // Initial runs
-
-    // TODO: Sæt "Test" på fragt labels mens vi teste
-    // TODO: Ref felt skal indeholde Vores Ordrenummer, Deres PO og en evt. Att: Person (Tages fra Ekstern Kommentar)
-
     //await validateOpenOrders()
-    //await validateOpenDeliveries() // TODO: DELETE THIS FUNCTION AND ALL TRACES.
     //await iterateDeliveryNotes()
     //await handleCheckValidatedBusinessPartners()
     //await validateBusinessPartners()
@@ -60,7 +55,7 @@ async function main() {
     })
 
     // PRINTING CONSIGNMENT LIST
-    cron('0 */10 14 * * 1-5', async () => {
+    cron('0 */10 12-14 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': PRINTING CONSIGNMENT LIST')
       await printConsignmentList()
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED PRINTING CONSIGNMENT LIST')

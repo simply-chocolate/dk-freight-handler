@@ -24,36 +24,13 @@ export type SapDocumentData = {
   UpdateDate: string
 }
 
-export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | void> {
+export async function getRelatedOrders(docEntries: number[], skip?: number): Promise<SapDocumentsData | void> {
   const authClient = await getAuthorizedClient()
   try {
     const res = await authClient.get<SapDocumentsData>('Orders', {
       params: {
-        $select: [
-          'DocEntry',
-          'DocNum',
-          'DocDate',
-          'DocDueDate',
-          'CardCode',
-          'CardName',
-          'NumAtCard',
-          'Comments',
-          'U_CCF_DF_AddressValidation',
-          'DocumentStatus',
-          'AddressExtension',
-          'U_CCF_DF_ValidationTime',
-          'U_CCF_DF_ValidationDate',
-          'UpdateTime',
-          'UpdateDate',
-        ].join(','),
-        $filter: [
-          "(U_CCF_DF_AddressValidation ne 'validated' or U_CCF_DF_AddressValidation eq NULL)",
-          "DocumentStatus eq 'bost_Open'",
-          'TransportationCode ne 14',
-          "Confirmed eq 'tYES'",
-          "not startswith(CardName, 'shop.simply')",
-          '(UpdateDate ge U_CCF_DF_ValidationDate or U_CCF_DF_ValidationDate eq NULL)',
-        ].join(' and '),
+        $select: ['DocEntry', 'DocNum'].join(','),
+        $filter: 'DocEntry eq ' + docEntries.join(' or DocEntry eq '),
         $skip: skip,
       },
     })
@@ -71,11 +48,11 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
   }
 }
 
-export async function getAllOpenOrders(): Promise<SapDocumentsData | void> {
+export async function getAllRelatedOrders(docEntries: number[]): Promise<SapDocumentsData | void> {
   const openOrders: SapDocumentsData = { value: [], 'odata.nextLink': '' }
 
   for (let page = 0; ; page++) {
-    const currentPage = await getOpenOrders(page * 20)
+    const currentPage = await getRelatedOrders(docEntries, page * 20)
     if (!currentPage) {
       break
     }

@@ -1,8 +1,8 @@
-import { formToJSON } from 'npm:axios@^1.4.0'
 import { getTrackAndTraceUrl } from '../fragt-api-wrapper/GET-TrackAndTraceUrl.ts'
 import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
 import { getAllValidatedDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
+import { getRelatedOrders } from '../sap-api-wrapper/GET-Order.ts'
 import { setFreightBooked } from '../sap-api-wrapper/PATCH-SetFreightBooked.ts'
 
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
@@ -24,10 +24,19 @@ export async function iterateDeliveryNotes() {
     return
   }
 
+  const docEntries: number[] = []
+  for (const docEntry of deliveryNotes.value) {
+    docEntries.push(docEntry.DocEntry)
+  }
+
+  const relatedOrders = await getRelatedOrders(docEntries)
+  if (!relatedOrders) {
+    return
+  }
+
   const consignmentIDs: string[] = []
 
   console.log("Let's iterate through the delivery notes and book some freight!")
-  console.log('Consignment IDs at start: ', consignmentIDs)
 
   for (const deliveryNote of deliveryNotes.value) {
     console.log('deliveryNote:', deliveryNote.DocNum)
@@ -60,7 +69,17 @@ export async function iterateDeliveryNotes() {
       continue
     }
 
-    const consignmentData = mapSAPDataToDF(deliveryNote)
+    const orderNumber = relatedOrders.value.find((order) => order.DocEntry === deliveryNote.DocEntry)?.DocNum
+    if (orderNumber == undefined) {
+      await sendTeamsMessage(
+        'No order number found for delivery note',
+        `**Customer Number**: ${deliveryNote.CardCode} <BR>
+        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+      )
+      continue
+    }
+
+    const consignmentData = mapSAPDataToDF(deliveryNote, orderNumber)
     if (consignmentData == undefined) {
       await sendTeamsMessage(
         'Mapping of SAP data to DF data failed',
@@ -70,15 +89,12 @@ export async function iterateDeliveryNotes() {
       continue
     }
 
-    console.log('consignments before creating consignment:', consignmentIDs)
     const consignmentID = await createConsignment(consignmentData, deliveryNote.DocNum)
     if (!consignmentID) {
       continue
     }
 
-    console.log('consignments before pushing consignment IDs:', consignmentIDs)
     consignmentIDs.push(consignmentID)
-    console.log('consignments after pushing consignment IDs:', consignmentIDs)
 
     const trackAndTraceUrl = await getTrackAndTraceUrl(consignmentID, deliveryNote.DocNum)
     if (!trackAndTraceUrl) {
@@ -93,19 +109,14 @@ export async function iterateDeliveryNotes() {
     return
   }
 
-  console.log('Consignment IDs before writing to the list : ', consignmentIDs)
-
   const writeConsignmentsListResult = await writeConsignmentsList(consignmentIDs, 'booked')
   if (writeConsignmentsListResult.type === 'error') {
     await sendTeamsMessage('Error saving the ConsignmentList list', writeConsignmentsListResult.error)
   }
 
-  // TODO: Send consignmentIDs to a txt file
   // TODO: We should check if there are any more open orders that needs to be booked
   // If everything is booked we should print the consignment list
   // If they time is after 13.30?? we should print the consignment list
-
-  console.log("ConsignmentIDs that we're going to print labels for:", consignmentIDs)
 
   const labelsPdfData = await getLabelsForPrintPDF(consignmentIDs)
   if (!labelsPdfData) {
