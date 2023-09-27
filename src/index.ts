@@ -31,14 +31,12 @@ async function main() {
 
     // Initial runs
     //await validateOpenOrders()
-    await iterateDeliveryNotes()
+    //await iterateDeliveryNotes()
     //await handleCheckValidatedBusinessPartners()
     //await validateBusinessPartners()
     //await logoutSap()
 
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')
-
-    return
 
     // VALIDATING BUSINESS PARTNERS
     cron('0 0 17 * * 1-5', async () => {

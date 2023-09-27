@@ -89,7 +89,7 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
         ].join(','),
         $filter: [
           `DocDate eq ${now}`,
-          //"U_CCF_DF_FreightBooked ne 'Y'",
+          "U_CCF_DF_FreightBooked ne 'Y'",
           'TransportationCode ne 14',
           "U_CCF_DF_ShippingProduct ne ''",
           'U_CCF_DF_NumberOfShippingProducts gt 0',
