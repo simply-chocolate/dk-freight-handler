@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'npm:axios@1.4.0'
 import { AddressExtension } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { SapBusinessPartnerAddress } from '../sap-api-wrapper/GET-BusinessPartners.ts'
+import { sendAddressValidationToTeams } from '../teams_notifier/SEND-addressValidation.ts'
 
 export type ValidatedAddressResult = ValidatedAddress[]
 
@@ -53,7 +54,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
   const validatedAddress = await getAddressValidation(addressExtension)
 
   if (!validatedAddress) {
-    await sendTeamsMessage(
+    await sendAddressValidationToTeams(
       'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
@@ -62,7 +63,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
     )
     return 'Address validation failed: No address found in DAWA'
   } else if (validatedAddress.length === 0) {
-    await sendTeamsMessage(
+    await sendAddressValidationToTeams(
       'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
@@ -87,7 +88,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
     }
   }
   if (!addressMatchFound) {
-    await sendTeamsMessage(
+    await sendAddressValidationToTeams(
       'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **OrderNumber**: ${orderNumber} <BR>
@@ -124,7 +125,7 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
   const validatedAddress = await getAddressValidation(addressExtension)
 
   if (!validatedAddress) {
-    await sendTeamsMessage(
+    await sendAddressValidationToTeams(
       'Business Partner Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **AddressName**: ${address.AddressName} <BR>
@@ -133,7 +134,7 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
     )
     return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
   } else if (validatedAddress.length === 0) {
-    await sendTeamsMessage(
+    await sendAddressValidationToTeams(
       'Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **AddressName**: ${address.AddressName} <BR>
@@ -158,7 +159,7 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
     }
   }
   if (!addressMatchFound) {
-    await sendTeamsMessage(
+    await sendAddressValidationToTeams(
       'Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
       **AddressName**: ${address.AddressName} <BR>

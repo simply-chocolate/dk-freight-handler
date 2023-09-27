@@ -8,8 +8,6 @@ import { iterateDeliveryNotes } from './utils/handleIterateDeliveries.ts'
 import { printConsignmentList } from './utils/handlePrintConsignmentList.ts'
 import { validateBusinessPartners } from './utils/handleValidateBusinessPartners.ts'
 import { validateOpenOrders } from './utils/handleValidateOpenOrders.ts'
-import { returnDateWithHours } from './utils/utils.ts'
-import { getDFSession } from './fragt-api-wrapper/POST-login.ts'
 
 async function main() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
@@ -20,6 +18,15 @@ async function main() {
   if (result.type == 'error') {
     console.log(result.error)
   } else {
+    // TODO: Implement Stock Transfers
+    // TODO: We have to get the Address from the Business Partner, so we need to have validated the Business Partner first.
+    // TODO: If we somehow run into a stock transfer request on a BP that is not validated, we should validate it.
+    // TODO: Once a day we should pull out all Business Partners and store the result in a JSON that we can access to check if a BP address is validated or not.
+    // TODO: We also need to store this information: TransportationCode, ValidFor, BPAddresses
+    // !!!!!!!!!!!!!!!!!! We already pull out this information when we validate the Business Partners, so we just need to store it in a JSON file.
+
+    // TODO: We also need to do the same for ItemData, because we need to store the ItemCode, UoMEntry/UoMCode and the Weight so we can calculate the total weight of the order.
+
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Running the script before starting the scheduler')
     // Initial runs
     //await validateOpenOrders()

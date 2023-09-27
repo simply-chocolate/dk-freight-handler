@@ -36,7 +36,6 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
           'DocDueDate',
           'CardCode',
           'CardName',
-          'NumAtCard',
           'Comments',
           'U_CCF_DF_AddressValidation',
           'DocumentStatus',

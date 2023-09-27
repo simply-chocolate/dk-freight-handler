@@ -9,10 +9,18 @@ export async function setAddressValidationBusinessPartner(
   BPAddresses?: SapBusinessPartnerAddress[]
 ): Promise<AxiosResponse | void> {
   const authClient = await getAuthorizedClient()
+
   try {
-    if (BPAddresses === undefined || !allAddressesValidated) {
+    if (BPAddresses === undefined) {
       const res = await authClient.patch(`BusinessPartners('${CardCode}')`, {
         U_CCF_DF_AddressesValidated: allAddressesValidated ? 'Y' : 'N',
+      })
+
+      return res.data
+    } else if (!allAddressesValidated) {
+      const res = await authClient.patch(`BusinessPartners('${CardCode}')`, {
+        U_CCF_DF_AddressesValidated: allAddressesValidated ? 'Y' : 'N',
+        BPAddresses: BPAddresses,
       })
 
       return res.data
