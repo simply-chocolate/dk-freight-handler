@@ -39,6 +39,7 @@ export type SapDeliveryNoteData = {
       Quantity: number
       Weight1: number
       Weight1Unit: number // 3 = Kilos
+      BaseEntry: number
     }
   ]
   // The names of these fields are not always containing the data you'd think they would
@@ -88,7 +89,7 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
         ].join(','),
         $filter: [
           `DocDate eq ${now}`,
-          "U_CCF_DF_FreightBooked ne 'Y'",
+          //"U_CCF_DF_FreightBooked ne 'Y'",
           'TransportationCode ne 14',
           "U_CCF_DF_ShippingProduct ne ''",
           'U_CCF_DF_NumberOfShippingProducts gt 0',

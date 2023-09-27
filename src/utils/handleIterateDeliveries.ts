@@ -25,8 +25,16 @@ export async function iterateDeliveryNotes() {
   }
 
   const docEntries: number[] = []
-  for (const docEntry of deliveryNotes.value) {
-    docEntries.push(docEntry.DocEntry)
+  for (const deliveryNote of deliveryNotes.value) {
+    if (deliveryNote.DocumentLines[0].BaseEntry == undefined || !deliveryNote.DocumentLines[0]) {
+      await sendTeamsMessage(
+        'Delivery note has no base entry on first line or no first line',
+        `**Customer Number**: ${deliveryNote.CardCode} <BR>
+        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+      )
+      continue
+    }
+    docEntries.push(deliveryNote.DocumentLines[0].BaseEntry)
   }
 
   const relatedOrders = await getRelatedOrders(docEntries)
@@ -35,8 +43,6 @@ export async function iterateDeliveryNotes() {
   }
 
   const consignmentIDs: string[] = []
-
-  console.log("Let's iterate through the delivery notes and book some freight!")
 
   for (const deliveryNote of deliveryNotes.value) {
     console.log('deliveryNote:', deliveryNote.DocNum)
@@ -52,7 +58,7 @@ export async function iterateDeliveryNotes() {
         continue
       }
       consignmentIDs.push(deliveryNote.U_CCF_DF_ConsignmentID)
-      await setFreightBooked(deliveryNote.DocEntry, deliveryNote.DocNum)
+      //await setFreightBooked(deliveryNote.DocEntry, deliveryNote.DocNum)
       continue
     }
 
@@ -69,7 +75,8 @@ export async function iterateDeliveryNotes() {
       continue
     }
 
-    const orderNumber = relatedOrders.value.find((order) => order.DocEntry === deliveryNote.DocEntry)?.DocNum
+    const orderNumber = relatedOrders.value.find((order) => order.DocEntry === deliveryNote.DocumentLines[0].BaseEntry)?.DocNum
+
     if (orderNumber == undefined) {
       await sendTeamsMessage(
         'No order number found for delivery note',

@@ -11,17 +11,6 @@ export type SapDocumentsData = {
 export type SapDocumentData = {
   DocEntry: number
   DocNum: number
-  DocDate: string
-  DocDueDate: string
-  CardCode: string
-  CardName: string
-  DocumentStatus: string
-  U_CCF_DF_AddressValidation: 'validated' | string
-  AddressExtension: AddressExtension
-  U_CCF_DF_ValidationTime: string
-  U_CCF_DF_ValidationDate: string
-  UpdateTime: string
-  UpdateDate: string
 }
 
 export async function getRelatedOrders(docEntries: number[], skip?: number): Promise<SapDocumentsData | void> {
