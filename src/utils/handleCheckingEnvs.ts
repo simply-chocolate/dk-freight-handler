@@ -32,6 +32,12 @@ export function checkEnvs(): returnTypeString {
       error: 'Error loading env variable TEAMS_WEBHOOK_URL',
     }
   }
+  if (Deno.env.get('ADDRESS_VALIDATION_WEBHOOK_URL') === '') {
+    return {
+      type: 'error',
+      error: 'Error loading env variable ADDRESS_VALIDATION_WEBHOOK_URL',
+    }
+  }
   if (Deno.env.get('DF_AUTH_URL') === '') {
     return {
       type: 'error',

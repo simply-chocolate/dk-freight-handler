@@ -28,6 +28,7 @@ async function main() {
     // TODO: We also need to do the same for ItemData, because we need to store the ItemCode, UoMEntry/UoMCode and the Weight so we can calculate the total weight of the order.
 
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Running the script before starting the scheduler')
+
     // Initial runs
     //await validateOpenOrders()
     //await iterateDeliveryNotes()
@@ -54,7 +55,7 @@ async function main() {
       await logoutSap()
     })
     // BOOKING FREIGHT AND PRINTING LABELS
-    cron('0 */5 7-15 * * 1-5', async () => {
+    cron('*/30 */1 7-15 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': BOOKING FREIGHT AND PRINTING LABELS')
       await iterateDeliveryNotes()
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED BOOKING FREIGHT AND PRINTING LABELS')
@@ -62,7 +63,7 @@ async function main() {
     })
 
     // PRINTING CONSIGNMENT LIST
-    cron('0 */10 12-14 * * 1-5', async () => {
+    cron('0 */10 12-15 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': PRINTING CONSIGNMENT LIST')
       await printConsignmentList()
       console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED PRINTING CONSIGNMENT LIST')
