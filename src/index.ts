@@ -39,7 +39,7 @@ async function main() {
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')
 
     // VALIDATING BUSINESS PARTNERS
-    cron('0 0 4 * * 1-5', async () => {
+    cron('0 0 17 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
       await handleCheckValidatedBusinessPartners()
       await validateBusinessPartners()
