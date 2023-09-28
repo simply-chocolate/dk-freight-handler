@@ -19,7 +19,7 @@ export async function sendTeamsMessage(title: string, body?: string, summary?: s
           if (webhookResult.text.includes('429')) {
             console.log('Rate limit reached')
             // Wait 10 minutes and try again
-            sleep(600000)
+            await sleep(600000)
           } else {
             break
           }

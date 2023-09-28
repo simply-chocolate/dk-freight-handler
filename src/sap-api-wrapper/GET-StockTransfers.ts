@@ -69,14 +69,14 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
           'StockTransferLines',
         ].join(','),
         $filter: [
-          `DocDate eq ${now}`,
+          //`DocDate eq ${now}`,
           "U_CCF_DF_FreightBooked ne 'Y'",
-          // "CardCode ne null",
-          // "FromWareHouse eq '01'",
+          'CardCode ne null',
+          // "FromWareHouse eq '01'", // Not sure we should use this, we should be checking on the lines instead.
           // 'TransportationCode ne 14', // TODO: We need to get this from the the Business Partner.
+          //"U_CCF_DF_AddressValidation eq 'validated'", // TODO: We need to get this from the the Business Partner.
           "U_CCF_DF_ShippingProduct ne ''",
           'U_CCF_DF_NumberOfShippingProducts gt 0',
-          "U_CCF_DF_AddressValidation eq 'validated'",
         ].join(' and '),
         $skip: skip,
       },
@@ -95,7 +95,7 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
   }
 }
 
-export async function getAllValidatedStockTransfers(): Promise<SapStockTransfersData | void> {
+export async function getAllStockTransfers(): Promise<SapStockTransfersData | void> {
   const openOrders: SapStockTransfersData = { value: [], 'odata.nextLink': '' }
 
   for (let page = 0; ; page++) {

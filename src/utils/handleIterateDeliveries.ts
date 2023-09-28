@@ -2,7 +2,7 @@ import { getTrackAndTraceUrl } from '../fragt-api-wrapper/GET-TrackAndTraceUrl.t
 import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF.ts'
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
 import { getAllValidatedDeliveryNotes } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
-import { getRelatedOrders } from '../sap-api-wrapper/GET-Order.ts'
+import { getRelatedOrders } from '../sap-api-wrapper/GET-RelatedOrders.ts'
 import { setFreightBooked } from '../sap-api-wrapper/PATCH-SetFreightBooked.ts'
 
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'

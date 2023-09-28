@@ -8,6 +8,7 @@ import { iterateDeliveryNotes } from './utils/handleIterateDeliveries.ts'
 import { printConsignmentList } from './utils/handlePrintConsignmentList.ts'
 import { validateBusinessPartners } from './utils/handleValidateBusinessPartners.ts'
 import { validateOpenOrders } from './utils/handleValidateOpenOrders.ts'
+import { iterateStockTransfers } from './utils/handleIterateStockTransfers.ts'
 
 async function main() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
@@ -32,12 +33,14 @@ async function main() {
     // Initial runs
     //await validateOpenOrders()
     //await iterateDeliveryNotes()
+    //await iterateStockTransfers()
+
     //await handleCheckValidatedBusinessPartners()
     //await validateBusinessPartners()
     //await logoutSap()
 
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')
-
+    //return
     // VALIDATING BUSINESS PARTNERS
     cron('0 0 17 * * 1-5', async () => {
       console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
