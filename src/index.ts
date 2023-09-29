@@ -34,50 +34,62 @@ async function main() {
     //await validateOpenOrders()
     //await iterateDeliveryNotes()
     //await iterateStockTransfers()
-
     //await handleCheckValidatedBusinessPartners()
     //await validateBusinessPartners()
     //await logoutSap()
 
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')
-    //return
+
     // VALIDATING BUSINESS PARTNERS
     cron('0 0 17 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
-      await handleCheckValidatedBusinessPartners()
-      await validateBusinessPartners()
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
-      await logoutSap()
+      try {
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
+        await handleCheckValidatedBusinessPartners()
+        await validateBusinessPartners()
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
+        await logoutSap()
+      } catch (error) {
+        console.log(error)
+      }
     })
 
     // VALIDATING OPEN ORDERS
     cron('0 */10 7-17 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
-      await validateOpenOrders()
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
-      await logoutSap()
+      try {
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
+        await validateOpenOrders()
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
+        await logoutSap()
+      } catch (error) {
+        console.log(error)
+      }
     })
     // BOOKING FREIGHT AND PRINTING LABELS
     cron('*/30 */1 7-15 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': BOOKING FREIGHT AND PRINTING LABELS')
-      await iterateDeliveryNotes()
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED BOOKING FREIGHT AND PRINTING LABELS')
-      await logoutSap()
+      try {
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': BOOKING FREIGHT AND PRINTING LABELS')
+        await iterateDeliveryNotes()
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED BOOKING FREIGHT AND PRINTING LABELS')
+        await logoutSap()
+      } catch (error) {
+        console.log(error)
+      }
     })
 
+    // CONSIGNMENT LISTS WILL BE HANDLED DIFFERENTLY
     // PRINTING CONSIGNMENT LIST
-    cron('0 */10 12-15 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': PRINTING CONSIGNMENT LIST')
-      await printConsignmentList()
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED PRINTING CONSIGNMENT LIST')
-    })
+    //cron('0 */10 12-15 * * 1-5', async () => {
+    //  console.log(new Date(new Date().getTime()).toLocaleString() + ': PRINTING CONSIGNMENT LIST')
+    //  await printConsignmentList()
+    //  console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED PRINTING CONSIGNMENT LIST')
+    //})
 
     // EMPTYING THE CONSIGNMENT LIST TXT TILES
-    cron('0 0 20 * * 1-5', async () => {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': EMPTYING THE CONSIGNMENT LIST TXT TILES')
-      await emptyConsignmentLists()
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED EMPTYING THE CONSIGNMENT LIST TXT TILES')
-    })
+    //cron('0 0 20 * * 1-5', async () => {
+    //  console.log(new Date(new Date().getTime()).toLocaleString() + ': EMPTYING THE CONSIGNMENT LIST TXT TILES')
+    //  await emptyConsignmentLists()
+    //  console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED EMPTYING THE CONSIGNMENT LIST TXT TILES')
+    //})
   }
 }
 
