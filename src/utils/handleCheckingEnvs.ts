@@ -80,6 +80,12 @@ export function checkEnvs(): returnTypeString {
       error: 'Error loading env variable PI_PRINTER_NAME_CONSIGNMENTLIST',
     }
   }
+  if (Deno.env.get('DEVICE_NAME') === '') {
+    return {
+      type: 'error',
+      error: 'Error loading env variable DEVICE_NAME',
+    }
+  }
 
   return {
     type: 'success',

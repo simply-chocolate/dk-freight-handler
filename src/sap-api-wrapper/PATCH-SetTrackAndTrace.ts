@@ -6,12 +6,13 @@ export async function setTrackAndTraceUrl(
   trackAndTraceUrl: string,
   docEntry: number,
   deliveryNote: number,
-  consignmentID: string
+  consignmentID: string,
+  path: 'DeliveryNotes' | 'StockTransfers'
 ): Promise<AxiosResponse | void> {
   const authClient = await getAuthorizedClient()
 
   try {
-    const res = await authClient.patch(`DeliveryNotes(${docEntry})`, {
+    const res = await authClient.patch(`${path}(${docEntry})`, {
       U_CCF_DF_TrackAndTrace: trackAndTraceUrl,
       U_CCF_DF_FreightBooked: 'Y',
       U_CCF_DF_ConsignmentID: consignmentID,
@@ -21,7 +22,7 @@ export async function setTrackAndTraceUrl(
   } catch (error) {
     if (error instanceof AxiosError) {
       await sendTeamsMessage(
-        'setTrackAndTraceUrl SAP request failed',
+        `setTrackAndTraceUrl SAP request failed on ${path}`,
         `**DeliveryNote**: ${deliveryNote}<BR>
         **Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>

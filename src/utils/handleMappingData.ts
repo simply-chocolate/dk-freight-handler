@@ -1,5 +1,8 @@
 import { ConsignmentBodyData, SenderAddress } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
-import { SapDeliveryNoteData } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
+import { SapBusinessPartnerAddress } from '../sap-api-wrapper/GET-BusinessPartners.ts'
+import { AddressExtension, DocumentLines, SapDeliveryNoteData } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
+import { getItemData } from '../sap-api-wrapper/GET-ItemData.ts'
+import { SapStockTransferData } from '../sap-api-wrapper/GET-StockTransfers.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { returnDateWithHours, setDotIntervals } from './utils.ts'
 
@@ -19,6 +22,7 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData, orderNumber: n
   for (const documentLine of deliveryNote.DocumentLines) {
     totalWeight += documentLine.Weight1
   }
+
   let reference = 'Følgeseddel: ' + deliveryNote.DocNum + '\n'
   let reference1 = ''
   let reference2 = ''
@@ -108,4 +112,73 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData, orderNumber: n
   }
 
   return consignmentData
+}
+
+export async function mapStockTransferToDeliveryNote(
+  stockTransfer: SapStockTransferData,
+  businessPartnerAddress: SapBusinessPartnerAddress
+): Promise<void | SapDeliveryNoteData> {
+  const documentLines: DocumentLines[] = []
+
+  for (const stockTransferLine of stockTransfer.StockTransferLines) {
+    const itemData = await getItemData(stockTransferLine.ItemCode)
+    if (!itemData) {
+      return
+    }
+    const itemWeight = itemData.ItemUnitOfMeasurementCollection.find(
+      (UoMCollection) => UoMCollection.UoMEntry === stockTransferLine.UoMEntry && UoMCollection.UoMType === 'iutSales'
+    )?.Weight1
+    if (!itemWeight) {
+      await sendTeamsMessage(
+        'No item weight found',
+        `**StockTransfer**: ${stockTransfer.DocNum}  **ItemCode**: ${stockTransferLine.ItemCode} <BR> **ItemName**: ${stockTransferLine.ItemDescription}`
+      )
+      return
+    }
+
+    const documentLine: DocumentLines = {
+      ItemCode: stockTransferLine.ItemCode,
+      ItemDescription: stockTransferLine.ItemDescription,
+      Quantity: stockTransferLine.Quantity,
+      BaseEntry: stockTransferLine.BaseEntry,
+      Weight1: itemWeight * stockTransferLine.Quantity,
+      Weight1Unit: 3,
+    }
+
+    documentLines.push(documentLine)
+  }
+
+  const deliveryNoteAddress: AddressExtension = {
+    ShipToBuilding: businessPartnerAddress.AddressName,
+    ShipToStreet: businessPartnerAddress.Street,
+    ShipToBlock: businessPartnerAddress.Block,
+    ShipToZipCode: businessPartnerAddress.ZipCode,
+    ShipToCity: businessPartnerAddress.City,
+    ShipToCountry: businessPartnerAddress.Country,
+  }
+
+  const deliveryNoteData: SapDeliveryNoteData = {
+    DocEntry: stockTransfer.DocEntry,
+    DocNum: stockTransfer.DocNum,
+    DocumentStatus: 'bost_Closed',
+    CardCode: stockTransfer.CardCode,
+    CardName: stockTransfer.CardName,
+    DocDate: stockTransfer.DocDate,
+    DocDueDate: stockTransfer.DueDate,
+    NumAtCard: '',
+    Comments: stockTransfer.Comments,
+    U_BOYX_EKomm: stockTransfer.U_BOYX_EKomm,
+    U_CCF_DF_ShippingProduct: stockTransfer.U_CCF_DF_ShippingProduct,
+    U_CCF_DF_NumberOfShippingProducts: stockTransfer.U_CCF_DF_NumberOfShippingProducts,
+    U_CCF_DF_ExchangePallet: stockTransfer.U_CCF_DF_ExchangePallet,
+    U_CCF_DF_DOTDelivery: stockTransfer.U_CCF_DF_DOTDelivery,
+    U_CCF_DF_DOTIntervalStart: stockTransfer.U_CCF_DF_DOTIntervalStart,
+    U_CCF_DF_DeliveryRemark: stockTransfer.U_CCF_DF_DeliveryRemark,
+    U_CCF_DF_FreightBooked: stockTransfer.U_CCF_DF_FreightBooked,
+    U_CCF_DF_ConsignmentID: stockTransfer.U_CCF_DF_ConsignmentID,
+    AddressExtension: deliveryNoteAddress,
+    DocumentLines: documentLines,
+  }
+
+  return deliveryNoteData
 }

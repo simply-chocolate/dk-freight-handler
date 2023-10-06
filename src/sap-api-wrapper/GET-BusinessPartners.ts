@@ -10,6 +10,7 @@ export type SapBusinessPartnersData = {
 export type SapBusinessPartnerData = {
   CardCode: string
   CardName: string
+  Valid: 'tYES' | 'tNO'
   BPAddresses: SapBusinessPartnerAddress[]
 }
 
@@ -30,7 +31,7 @@ export async function getActiveBusinessPartners(skip?: number): Promise<SapBusin
   try {
     const res = await authClient.get<SapBusinessPartnersData>('BusinessPartners', {
       params: {
-        $select: ['CardCode', 'CardName', 'BPAddresses'].join(','),
+        $select: ['CardCode', 'CardName', 'BPAddresses', 'Valid'].join(','),
         $filter: [
           "Valid eq 'tYES'",
           'ShippingType ne 14',
@@ -38,7 +39,7 @@ export async function getActiveBusinessPartners(skip?: number): Promise<SapBusin
           "(U_CCF_DF_AddressesValidated ne 'Y' or U_CCF_DF_AddressesValidated eq NULL)",
         ].join(' and '),
         $skip: skip,
-        $orderby: ['CreateDate desc'].join(','),
+        $orderby: ['CreateDate asc'].join(','),
       },
     })
 

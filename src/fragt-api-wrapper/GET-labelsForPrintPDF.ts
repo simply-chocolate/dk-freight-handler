@@ -21,7 +21,7 @@ export async function getLabelsForPrintPDF(consignmentNumbers: string[]): Promis
         'createConsignment DF request failed',
         `**consignmentNumbers**: ${consignmentNumbers.join(', ')}<BR>
           **Code**: ${error.code}<BR>
-          **Error Message**: ${error.message}<BR>
+          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
           **Body**: ${JSON.stringify(error.config?.data)}<BR>
           `
       )

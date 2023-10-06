@@ -5,7 +5,7 @@ import { SapBusinessPartnerAddress } from './GET-BusinessPartners.ts'
 
 export async function setAddressValidationBusinessPartner(
   CardCode: string,
-  allAddressesValidated: boolean,
+  allAddressesValidated: boolean | null,
   BPAddresses?: SapBusinessPartnerAddress[]
 ): Promise<AxiosResponse | void> {
   const authClient = await getAuthorizedClient()
@@ -20,6 +20,12 @@ export async function setAddressValidationBusinessPartner(
     } else if (!allAddressesValidated) {
       const res = await authClient.patch(`BusinessPartners('${CardCode}')`, {
         U_CCF_DF_AddressesValidated: allAddressesValidated ? 'Y' : 'N',
+        BPAddresses: BPAddresses,
+      })
+
+      return res.data
+    } else if (allAddressesValidated === null) {
+      const res = await authClient.patch(`BusinessPartners('${CardCode}')`, {
         BPAddresses: BPAddresses,
       })
 

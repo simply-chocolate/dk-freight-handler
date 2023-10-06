@@ -3,6 +3,7 @@ import { AddressExtension } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 import { SapBusinessPartnerAddress } from '../sap-api-wrapper/GET-BusinessPartners.ts'
 import { sendAddressValidationToTeams } from '../teams_notifier/SEND-addressValidation.ts'
+import { correctCasing } from './utils.ts'
 
 export type ValidatedAddressResult = ValidatedAddress[]
 
@@ -42,13 +43,13 @@ export async function getAddressValidation(addressExtension: AddressExtension): 
 
 export async function validateDocumentAddress(addressExtension: AddressExtension, cardCode: string, orderNumber: number): Promise<string> {
   if (addressExtension.ShipToStreet != null) {
-    addressExtension.ShipToStreet = addressExtension.ShipToStreet.toLowerCase()
+    addressExtension.ShipToStreet = correctCasing(addressExtension.ShipToStreet)
   }
   if (addressExtension.ShipToCity != null) {
-    addressExtension.ShipToCity = addressExtension.ShipToCity.toLowerCase()
+    addressExtension.ShipToCity = correctCasing(addressExtension.ShipToCity)
   }
   if (addressExtension.ShipToZipCode != null) {
-    addressExtension.ShipToZipCode = addressExtension.ShipToZipCode.toLowerCase()
+    addressExtension.ShipToZipCode = correctCasing(addressExtension.ShipToZipCode)
   }
 
   const validatedAddress = await getAddressValidation(addressExtension)
@@ -77,7 +78,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
   const wrongAddresses: string[] = []
 
   for (const address of validatedAddress) {
-    address.adressebetegnelse = address.adressebetegnelse.toLowerCase()
+    address.adressebetegnelse = correctCasing(address.adressebetegnelse)
 
     if (`${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}` !== address.adressebetegnelse) {
       wrongAddresses.push(address.adressebetegnelse)
@@ -104,13 +105,13 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
 
 export async function validateBPAddress(address: SapBusinessPartnerAddress, cardCode: string): Promise<string> {
   if (address.Street != null) {
-    address.Street = address.Street.toLowerCase()
+    address.Street = correctCasing(address.Street)
   }
   if (address.City != null) {
-    address.City = address.City.toLowerCase()
+    address.City = correctCasing(address.City)
   }
   if (address.ZipCode != null) {
-    address.ZipCode = address.ZipCode.toLowerCase()
+    address.ZipCode = correctCasing(address.ZipCode)
   }
 
   const addressExtension: AddressExtension = {
@@ -128,18 +129,18 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
     await sendAddressValidationToTeams(
       'Business Partner Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
-      **AddressName**: ${address.AddressName} <BR>
+      **AddressName**: ${addressExtension.ShipToBuilding} <BR>
       **Error**: No address found in DAWA <BR>
-      **Address SAP**: ${address.Street}, ${address.ZipCode} ${address.City} <BR>`
+      **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>`
     )
     return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
   } else if (validatedAddress.length === 0) {
     await sendAddressValidationToTeams(
-      'Address validation failed',
+      'Business Partner Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
-      **AddressName**: ${address.AddressName} <BR>
+      **AddressName**: ${addressExtension.ShipToBuilding} <BR>
       **Error**: No address found in DAWA <BR>
-      **Address SAP**: ${address.Street}, ${address.ZipCode} ${address.City} <BR>`
+      **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>`
     )
     return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
   }
@@ -148,7 +149,7 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
   const wrongAddresses: string[] = []
 
   for (const address of validatedAddress) {
-    address.adressebetegnelse = address.adressebetegnelse.toLowerCase()
+    address.adressebetegnelse = correctCasing(address.adressebetegnelse)
 
     if (`${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}` !== address.adressebetegnelse) {
       wrongAddresses.push(address.adressebetegnelse)
@@ -160,9 +161,9 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
   }
   if (!addressMatchFound) {
     await sendAddressValidationToTeams(
-      'Address validation failed',
+      'Business Partner Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
-      **AddressName**: ${address.AddressName} <BR>
+      **AddressName**: ${addressExtension.ShipToBuilding} <BR>
       **Error**: Addresses doesn't match <BR>
       **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>
       **Address DAWA**: ${wrongAddresses.join('<BR>')}`

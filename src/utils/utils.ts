@@ -81,3 +81,13 @@ export function deliveryAddressIsValid(deliveryNote: SapDeliveryNoteData): boole
 
   return true
 }
+
+export function correctCasing(string: string): string {
+  let formattedString = ''
+  const splittedString = string.split(' ')
+  for (const word of splittedString) {
+    formattedString += word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() + ' '
+  }
+
+  return formattedString.trim()
+}

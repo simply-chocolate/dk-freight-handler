@@ -11,7 +11,7 @@ export type SapStockTransferData = {
   DocEntry: number
   DocNum: number
   DocDate: string
-  DocDueDate: string
+  DueDate: string
   CardCode: string
   CardName: string
   Comments: string
@@ -38,6 +38,7 @@ export type SapStockTransferData = {
       MeasureUnit: string
       UoMEntry: number
       UoMCode: string
+      BaseEntry: number
     }
   ]
 }
@@ -58,6 +59,7 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
           'CardName',
           'Comments',
           'U_BOYX_EKomm',
+          'ShipToCode',
           'U_CCF_DF_ShippingProduct',
           'U_CCF_DF_NumberOfShippingProducts',
           'U_CCF_DF_ExchangePallet',
@@ -72,9 +74,6 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
           //`DocDate eq ${now}`,
           "U_CCF_DF_FreightBooked ne 'Y'",
           'CardCode ne null',
-          // "FromWareHouse eq '01'", // Not sure we should use this, we should be checking on the lines instead.
-          // 'TransportationCode ne 14', // TODO: We need to get this from the the Business Partner.
-          //"U_CCF_DF_AddressValidation eq 'validated'", // TODO: We need to get this from the the Business Partner.
           "U_CCF_DF_ShippingProduct ne ''",
           'U_CCF_DF_NumberOfShippingProducts gt 0',
         ].join(' and '),
@@ -88,7 +87,7 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
       await sendTeamsMessage(
         'getStockTransfers SAP request failed',
         `**Code**: ${error.code}<BR>
-          **Error Message**: ${error.message}<BR>
+          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
           **Body**: ${JSON.stringify(error.config)}<BR>`
       )
     }

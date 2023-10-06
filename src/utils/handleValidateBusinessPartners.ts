@@ -37,11 +37,13 @@ export async function validateBusinessPartners() {
         validationResponse = validationResponse.slice(0, 254)
       }
       address.U_CCF_DF_AddressValidation = validationResponse
+
       if (validationResponse != 'validated') {
         allAddressesValidated = false
       }
-      await sleep(1000 * 5) // Sleep for 5 seconds to let the address validation finish
+      await sleep(1000 * 2) // Sleep for 5 seconds to let the address validation finish
     }
+
     await setAddressValidationBusinessPartner(businessPartner.CardCode, allAddressesValidated, businessPartner.BPAddresses)
     await sleep(1000 * 30) // Sleep for 30 seconds to let data get sent to SAP
   }

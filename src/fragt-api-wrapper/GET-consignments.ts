@@ -20,7 +20,7 @@ export async function getConsignments() {
       await sendTeamsMessage(
         'getConsignments DF request failed',
         `**Code**: ${error.response?.data.error.code}<BR>
-          **Error Message**: ${error.response?.data.error.message}<BR>`
+          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>`
       )
     }
   }

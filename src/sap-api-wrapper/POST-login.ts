@@ -52,13 +52,14 @@ export async function getAuthorizedClient(): Promise<AxiosInstance> {
       if (error instanceof AxiosError) {
         await sendTeamsMessage(
           'getAuthorizedClient SAP request failed',
-          `**Code**: ${error.response?.data.error.code}<BR>
-            **Error Message**: ${error.response?.data.error.message.value}<BR>`
+          `**Error Message**: ${JSON.stringify(error.response?.data)}<BR>
+            **Code**: ${error.response?.data.error.code}<BR>
+            **Body**: ${JSON.stringify(error.config)}<BR>
+            **Error Message**: ${error.response?.data.error.message}<BR>`
         )
       }
+      await sleep(30000) // wait 30 seconds before retrying
     }
-
-    await sleep(1000)
   }
 
   throw new Error('unable to get authenticated SAP client')

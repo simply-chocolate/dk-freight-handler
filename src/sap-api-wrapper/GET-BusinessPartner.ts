@@ -1,16 +1,16 @@
 import { AxiosError } from 'npm:axios@1.4.0'
-import { getAuthorizedClient } from './POST-login.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
-import { SapBusinessPartnersData } from './GET-BusinessPartners.ts'
+import { SapBusinessPartnerData } from './GET-BusinessPartners.ts'
+import { getAuthorizedClient } from './POST-login.ts'
 
-export async function getBusinessPartner(CardCode: string): Promise<SapBusinessPartnersData | void> {
+export async function getBusinessPartner(CardCode: string): Promise<SapBusinessPartnerData | void> {
   const authClient = await getAuthorizedClient()
 
   try {
-    const res = await authClient.get<SapBusinessPartnersData>('BusinessPartners', {
+    const res = await authClient.get<SapBusinessPartnerData>(`BusinessPartners('${CardCode}')`, {
       params: {
         $select: ['CardCode', 'CardName', 'BPAddresses'].join(','),
-        $filter: [`CardCode eq '${CardCode}'`].join(' and '),
+        $filter: "Valid eq 'tYES'",
       },
     })
 

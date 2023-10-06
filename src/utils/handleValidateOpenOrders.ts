@@ -1,3 +1,4 @@
+import { getBusinessPartner } from '../sap-api-wrapper/GET-BusinessPartner.ts'
 import { getAllOpenOrders } from '../sap-api-wrapper/GET-OpenOrders.ts'
 import { setAddressValidationOrder } from '../sap-api-wrapper/PATCH-SetAddressValidationOrder.ts'
 import { sleep } from './sleep.ts'
@@ -6,20 +7,23 @@ import { validateDocumentAddress } from './validateAddress.ts'
 export async function validateOpenOrders() {
   const orders = await getAllOpenOrders()
   if (!orders) {
-    console.log('No open orders found')
     return
   } else if (orders.value.length === 0) {
-    console.log('No open orders found')
     return
   }
 
   for (const order of orders.value) {
+    const businessPartner = await getBusinessPartner(order.CardCode)
+    if (!businessPartner) {
+      // BP is probably inactive, just skip it, can't validate for inactives
+      continue
+    }
+
     if (order.AddressExtension.ShipToCountry !== 'DK' && order.AddressExtension.ShipToCountry != null) {
       continue
     }
+
     if (order.AddressExtension.U_CCF_DF_AddressValidationS === 'validated') {
-      // This will save resources since we don't have to validate the address again
-      // It does however require that we're 100% certain that the address on the order is validated, which we should be with the current setup.
       console.log(new Date(new Date().getTime()).toLocaleString() + ': Address validated on BP for order:', order.DocNum, 'skipping...')
       await setAddressValidationOrder(order.DocEntry, order.DocNum, 'validated')
       continue
@@ -31,8 +35,6 @@ export async function validateOpenOrders() {
         continue
       }
     }
-
-    console.log(new Date(new Date().getTime()).toLocaleString() + ': DAWA validating address order:', order.DocNum, order.AddressExtension.ShipToBuilding)
 
     const validationResponse = await validateDocumentAddress(order.AddressExtension, order.CardCode, order.DocNum)
 

@@ -17,10 +17,10 @@ export type SapDeliveryNoteData = {
   NumAtCard: string
   Comments: string
   DocumentStatus: string
-  Address: string
-
   U_BOYX_EKomm: string
-  ContactPersonCode: number
+
+  Address?: string
+  ContactPersonCode?: number
 
   U_CCF_DF_ShippingProduct: 'KT1' | 'PL1' | 'PL2' | 'PL4'
   U_CCF_DF_NumberOfShippingProducts: number /* DEFAULT EMPTY - IF EMPTY: ERROR */
@@ -32,18 +32,18 @@ export type SapDeliveryNoteData = {
   U_CCF_DF_FreightBooked: 'N' | 'Y' | 'P' // P = Print label again
   U_CCF_DF_ConsignmentID: string | undefined
 
-  DocumentLines: [
-    {
-      ItemCode: string
-      ItemDescription: string
-      Quantity: number
-      Weight1: number
-      Weight1Unit: number // 3 = Kilos
-      BaseEntry: number
-    }
-  ]
+  DocumentLines: DocumentLines[]
   // The names of these fields are not always containing the data you'd think they would
   AddressExtension: AddressExtension
+}
+
+export type DocumentLines = {
+  ItemCode: string
+  ItemDescription: string
+  Quantity: number
+  Weight1: number
+  Weight1Unit: number // 3 = Kilos
+  BaseEntry: number
 }
 
 export type AddressExtension = {
@@ -88,13 +88,15 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'AddressExtension',
         ].join(','),
         $filter: [
-          `DocDate eq ${now}`,
+          `DocDate ge ${now}`,
           "(U_CCF_DF_FreightBooked ne 'Y' or U_CCF_DF_FreightBooked eq NULL)",
           'TransportationCode ne 14',
+          'TransportationCode ne 16',
           "U_CCF_DF_ShippingProduct ne ''",
           'U_CCF_DF_NumberOfShippingProducts gt 0',
           "U_CCF_DF_AddressValidation eq 'validated'",
         ].join(' and '),
+        //$filter: 'DocNum eq 106805',
         $skip: skip,
       },
     })
@@ -105,8 +107,9 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
       await sendTeamsMessage(
         'getDeliveryNotes SAP request failed',
         `**Code**: ${error.code}<BR>
-          **Error Message**: ${error.message}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
+          **Body**: ${JSON.stringify(error.config)}<BR>
+          `
       )
     }
   }
