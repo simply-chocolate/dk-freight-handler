@@ -7,14 +7,10 @@ export async function validateBusinessPartners() {
   const businessPartners = await getAllActiveBusinessPartners()
 
   if (!businessPartners) {
-    console.log('No active business partners found')
     return
   } else if (businessPartners.value.length === 0) {
-    console.log('No active business partners found')
     return
   }
-
-  console.log('Found Business Partners:', businessPartners.value.length)
 
   for (const businessPartner of businessPartners.value) {
     let allAddressesValidated = true
@@ -29,8 +25,6 @@ export async function validateBusinessPartners() {
       if (address.Country !== 'DK') {
         continue
       }
-
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': DAWA validating address BP:', businessPartner.CardCode, address.AddressName)
 
       let validationResponse = await validateBPAddress(address, businessPartner.CardCode)
       if (validationResponse.length > 254) {

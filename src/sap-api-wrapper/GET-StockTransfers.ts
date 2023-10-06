@@ -71,7 +71,7 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
           'StockTransferLines',
         ].join(','),
         $filter: [
-          //`DocDate eq ${now}`,
+          `DocDate eq ${now}`,
           "U_CCF_DF_FreightBooked ne 'Y'",
           'CardCode ne null',
           "U_CCF_DF_ShippingProduct ne ''",

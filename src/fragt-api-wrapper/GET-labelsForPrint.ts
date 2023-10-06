@@ -1,13 +1,15 @@
 import { format } from 'date-fns'
 import { AxiosError } from 'npm:axios@^1.4.0'
 import { getDFSession } from './POST-login.ts'
+import { returnTypeString } from '../utils/returnTypes.ts'
+import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
-async function savePDF(pdfData: Uint8Array, savePath: string): Promise<void> {
+async function savePDF(pdfData: Uint8Array, savePath: string): Promise<returnTypeString> {
   try {
     await Deno.writeFile(savePath, pdfData)
-    console.log(`PDF saved successfully at ${savePath}`)
+    return { type: 'success', data: `PDF saved to ${savePath}` }
   } catch (error) {
-    console.error('Error saving the PDF:', error.message)
+    return { type: 'error', error: error.message }
   }
 }
 
@@ -30,8 +32,14 @@ export async function getLabelsForPrintPrinter(consignmentNumbers: string[]) {
     await savePDF(pdfData, savePath)
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.log(error.response?.data.error.message)
-      console.log(error.code)
+      await sendTeamsMessage(
+        'createConsignment DF request failed',
+        `**consignmentNumbers**: ${consignmentNumbers.join(', ')}<BR>
+          **Code**: ${error.code}<BR>
+          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
+          **Body**: ${JSON.stringify(error.config?.data)}<BR>
+          `
+      )
     }
   }
 }

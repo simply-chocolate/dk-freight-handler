@@ -7,16 +7,12 @@ export async function handleCheckValidatedBusinessPartners() {
   const businessPartners = await getValidatedBusinessPartners()
 
   if (!businessPartners) {
-    console.log('No validated business partners found')
     return
   } else if (businessPartners.value.length === 0) {
-    console.log('No validated business partners found')
     return
   }
 
   for (const businessPartner of businessPartners.value) {
-    console.log("Checking if validated business partner's data has been updated since last validation:", businessPartner.CardCode)
-
     if (businessPartner.U_CCF_DF_LastSuccessValidationDate >= businessPartner.UpdateDate) {
       await sendTeamsMessage(
         'Business Partner has not been updated since last validation',

@@ -3,7 +3,6 @@ import { getLabelsForPrintPDF } from '../fragt-api-wrapper/GET-labelsForPrintPDF
 import { createConsignment } from '../fragt-api-wrapper/POST-createConsignment.ts.ts'
 import { SapDeliveryNoteData } from '../sap-api-wrapper/GET-DeliveryNotes.ts'
 import { setTrackAndTraceUrl } from '../sap-api-wrapper/PATCH-SetTrackAndTrace.ts'
-import { writeConsignmentsList } from './handleConsignmentsListFiles.ts'
 import { mapSAPDataToDF } from './handleMappingData.ts'
 import { printFileLinux } from './handlePrinting.ts'
 import { returnTypeString } from './returnTypes.ts'
@@ -33,11 +32,6 @@ export async function bookFreight(deliveryNote: SapDeliveryNoteData, orderNumber
 export async function printLabels(consignmentIDs: string[]): Promise<returnTypeString> {
   if (consignmentIDs.length === 0) {
     return { type: 'success', data: 'No consignmentIDs to save' }
-  }
-
-  const writeConsignmentsListResult = await writeConsignmentsList(consignmentIDs, 'booked')
-  if (writeConsignmentsListResult.type === 'error') {
-    return { type: 'error', error: writeConsignmentsListResult.error }
   }
 
   const labelsPdfData = await getLabelsForPrintPDF(consignmentIDs)
