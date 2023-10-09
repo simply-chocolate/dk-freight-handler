@@ -32,10 +32,10 @@ async function main() {
     // VALIDATING BUSINESS PARTNERS
     cron('0 0 17 * * 1-5', async () => {
       try {
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING BUSINESS PARTNERS')
         await handleCheckValidatedBusinessPartners()
         await validateBusinessPartners()
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
+        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING BUSINESS PARTNERS')
         await logoutSap()
       } catch (error) {
         console.log(error)
@@ -45,9 +45,7 @@ async function main() {
     // VALIDATING OPEN ORDERS
     cron('0 */10 7-17 * * 1-5', async () => {
       try {
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING OPEN ORDERS')
         await validateOpenOrders()
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED VALIDATING OPEN ORDERS')
         await logoutSap()
       } catch (error) {
         console.log(error)
@@ -56,10 +54,8 @@ async function main() {
     // BOOKING FREIGHT AND PRINTING LABELS
     cron('*/30 */1 7-15 * * 1-5', async () => {
       try {
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': BOOKING FREIGHT AND PRINTING LABELS')
         await iterateDeliveryNotes()
         await iterateStockTransfers()
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': FINISHED BOOKING FREIGHT AND PRINTING LABELS')
         await logoutSap()
       } catch (error) {
         console.log(error)
@@ -68,4 +64,4 @@ async function main() {
   }
 }
 
-main()
+await main()

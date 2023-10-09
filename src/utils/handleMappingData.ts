@@ -67,7 +67,7 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData, orderNumber: n
     ConsignmentDate: new Date(deliveryNote.DocDate),
     WhoPays: 'Prepaid',
     ConsignmentNoteType: 'Pickup',
-    ShippingType: 'PalleEnhedsForsendelse', // This will probably always be PallEnhedsForsendelse
+    ShippingType: 'PalleEnhedsForsendelse',
     Goods: [
       {
         NumberOfItems: deliveryNote.U_CCF_DF_NumberOfShippingProducts == null ? 1 : deliveryNote.U_CCF_DF_NumberOfShippingProducts,
@@ -82,7 +82,6 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData, orderNumber: n
       Town: deliveryNote.AddressExtension.ShipToCity,
       ZipCode: deliveryNote.AddressExtension.ShipToZipCode,
       Country: deliveryNote.AddressExtension.ShipToCountry,
-      //ContactPerson: deliveryNote.,
     },
     PickUp: senderAddress,
     PickupTime: {
