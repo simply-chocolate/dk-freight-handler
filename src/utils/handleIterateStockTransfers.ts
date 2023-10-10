@@ -61,7 +61,6 @@ export async function iterateStockTransfers() {
     }
 
     if (businessPartnerAddress.U_CCF_DF_AddressValidation.trim() !== 'validated') {
-      console.log('Address isnt validated, validating...')
       let validationResponse = await validateBPAddress(businessPartnerAddress, stockTransfer.CardCode)
       if (validationResponse !== 'validated') {
         if (validationResponse.length > 254) {

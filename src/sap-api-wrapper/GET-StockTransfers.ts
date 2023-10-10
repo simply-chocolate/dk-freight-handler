@@ -70,14 +70,13 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
           'U_CCF_DF_ConsignmentID',
           'StockTransferLines',
         ].join(','),
-        /* $filter: [
+        $filter: [
           `DocDate eq ${now}`,
           "U_CCF_DF_FreightBooked ne 'Y'",
           'CardCode ne null',
           "U_CCF_DF_ShippingProduct ne ''",
           'U_CCF_DF_NumberOfShippingProducts gt 0',
-        ].join(' and '),*/
-        $filter: 'DocNum eq 108891',
+        ].join(' and '),
         $skip: skip,
       },
     })
