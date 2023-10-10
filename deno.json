@@ -1,3 +1,6 @@
 {
-  "importHelpers": true
+  "importHelpers": true,
+  "tasks": {
+    "dev": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/index.ts"
+  }
 }
