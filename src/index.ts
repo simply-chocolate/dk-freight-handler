@@ -22,7 +22,7 @@ async function main() {
     // Initial runs
     //await validateOpenOrders()
     //await iterateDeliveryNotes()
-    //await iterateStockTransfers()
+    await iterateStockTransfers()
     //await handleCheckValidatedBusinessPartners()
     //await validateBusinessPartners()
     //await logoutSap()

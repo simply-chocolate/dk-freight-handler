@@ -60,11 +60,16 @@ export async function iterateStockTransfers() {
       continue
     }
 
-    if (businessPartnerAddress.U_CCF_DF_AddressValidation !== 'validated') {
+    if (businessPartnerAddress.U_CCF_DF_AddressValidation.trim() !== 'validated') {
+      console.log('Address isnt validated, validating...')
       let validationResponse = await validateBPAddress(businessPartnerAddress, stockTransfer.CardCode)
       if (validationResponse !== 'validated') {
         if (validationResponse.length > 254) {
           validationResponse = validationResponse.slice(0, 254)
+        }
+
+        if (validationResponse === businessPartnerAddress.U_CCF_DF_AddressValidation) {
+          continue
         }
 
         businessPartnerAddress.U_CCF_DF_AddressValidation = validationResponse // Sleep for 5 seconds to let the address validation finish
@@ -74,13 +79,14 @@ export async function iterateStockTransfers() {
             'Error setting address validation on business partner',
             `**DocNum**: ${stockTransfer.DocNum} **CardCode**: ${stockTransfer.CardCode} **ShipToCode**: ${stockTransfer.ShipToCode} `
           )
-          continue
         }
 
         await sleep(1000 * 30) // Sleep for 30 seconds to let data get sent to SAP
         continue
+      } else {
+        validatedAddress = businessPartnerAddress
       }
-
+    } else {
       validatedAddress = businessPartnerAddress
     }
 
