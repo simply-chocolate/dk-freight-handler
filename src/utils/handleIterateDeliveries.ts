@@ -36,7 +36,7 @@ export async function iterateDeliveryNotes() {
   const consignmentIDs: string[] = []
 
   for (const deliveryNote of deliveryNotes.value) {
-    console.log('deliveryNote:', deliveryNote.DocNum)
+    console.log(new Date(new Date().getTime()).toLocaleString(), ': deliveryNote:', deliveryNote.DocNum)
 
     if (deliveryNote.U_CCF_DF_FreightBooked === 'P') {
       if (deliveryNote.U_CCF_DF_ConsignmentID == undefined) {

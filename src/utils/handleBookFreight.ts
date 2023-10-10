@@ -24,10 +24,7 @@ export async function bookFreight(deliveryNote: SapDeliveryNoteData, orderNumber
     return { type: 'error', error: 'Track and trace url creation failed' }
   }
 
-  const TrackAndTraceResonse = await setTrackAndTraceUrl(trackAndTraceUrl, deliveryNote.DocEntry, deliveryNote.DocNum, consignmentID, type)
-  if (!TrackAndTraceResonse) {
-    return { type: 'error', error: 'Track and trace url set failed' }
-  }
+  await setTrackAndTraceUrl(trackAndTraceUrl, deliveryNote.DocEntry, deliveryNote.DocNum, consignmentID, type)
 
   return { type: 'success', data: consignmentID }
 }
