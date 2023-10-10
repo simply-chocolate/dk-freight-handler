@@ -11,7 +11,7 @@ import { validateOpenOrders } from './utils/handleValidateOpenOrders.ts'
 async function main() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
   // https://github.com/LukeChannings/deno-arm64
-
+  // Adding the deno permanently to the $PATH variable: https://pimylifeup.com/ubuntu-add-to-path/
   const result = checkEnvs()
 
   if (result.type == 'error') {

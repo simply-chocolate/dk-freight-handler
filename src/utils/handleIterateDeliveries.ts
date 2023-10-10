@@ -81,8 +81,8 @@ export async function iterateDeliveryNotes() {
     if (consignmentID.type === 'error') {
       await sendTeamsMessage(
         'Error booking freight and printing label',
-        'Mapping of SAP data to DF data failed',
-        ` **Customer Number**: ${deliveryNote.CardCode} <BR>
+        `Mapping of SAP data to DF data failed <BR>
+         **Customer Number**: ${deliveryNote.CardCode} <BR>
           **Delivery Note Number**: ${deliveryNote.DocNum} <BR>
           **Error**: ${consignmentID.error}<BR>`
       )
