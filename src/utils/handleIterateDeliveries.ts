@@ -88,14 +88,12 @@ export async function iterateDeliveryNotes() {
       )
       continue
     }
-    console.log('Pushing consignmentID to consignmentIDs array:', consignmentID.data)
+
     consignmentIDs.push(consignmentID.data)
   }
 
   const labelPrintResult = await printLabels(consignmentIDs)
   if (labelPrintResult.type === 'error') {
     await sendTeamsMessage('Error printing labels', labelPrintResult.error)
-  } else {
-    console.log(labelPrintResult.data)
   }
 }

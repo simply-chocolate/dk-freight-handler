@@ -31,7 +31,6 @@ export async function validateOpenOrders() {
 
     if (order.U_CCF_DF_ValidationTime) {
       if (order.U_CCF_DF_ValidationTime > order.UpdateTime && order.U_CCF_DF_ValidationDate >= order.UpdateDate) {
-        console.log(new Date(new Date().getTime()).toLocaleString() + ': Order hasnt been changed after last validation: ', order.DocNum, ' skipping...')
         continue
       }
     }
