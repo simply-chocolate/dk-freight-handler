@@ -29,7 +29,7 @@ export async function sendAddressValidationToTeams(title: string, body?: string,
         }
       }
     } catch (error) {
-      console.log('Error sending address validation to teams', error)
+      console.log('Error sending address validation to teams' + error.response?.data)
     }
   }
 }
