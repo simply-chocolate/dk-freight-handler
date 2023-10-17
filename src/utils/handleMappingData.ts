@@ -97,7 +97,7 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData, orderNumber: n
     Reference4: reference4,
     Reference5: reference5,
 
-    PickupRemarks: deliveryNote.Comments,
+    PickupRemarks: 'Følgeseddel: ' + deliveryNote.DocNum + 'Kommentar: ' + deliveryNote.Comments,
   }
 
   if (deliveryNote.U_CCF_DF_DOTDelivery !== 'N') {
