@@ -58,8 +58,9 @@ export async function iterateStockTransfers() {
       continue
     }
 
-    if (businessPartnerAddress.U_CCF_DF_AddressValidation.trim() !== 'validated') {
+    if (businessPartnerAddress.U_CCF_DF_AddressValidation == undefined || businessPartnerAddress.U_CCF_DF_AddressValidation.trim() !== 'validated') {
       let validationResponse = await validateBPAddress(businessPartnerAddress, stockTransfer.CardCode)
+
       if (validationResponse !== 'validated') {
         if (validationResponse.length > 254) {
           validationResponse = validationResponse.slice(0, 254)
