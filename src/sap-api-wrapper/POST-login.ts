@@ -55,7 +55,7 @@ export async function getAuthorizedClient(): Promise<AxiosInstance> {
           `**Error Message**: ${JSON.stringify(error.response?.data)}<BR>
             **Code**: ${error.response?.data.error.code}<BR>
             **Body**: ${JSON.stringify(error.config)}<BR>
-            **Error Message**: ${error.response?.data.error.message}<BR>`
+            **Error Message**: ${JSON.stringify(error.response?.data.error.message)}<BR>`
         )
       }
       await sleep(30000) // wait 30 seconds before retrying

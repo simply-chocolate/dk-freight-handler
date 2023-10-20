@@ -15,7 +15,11 @@ export async function validateOpenOrders() {
   for (const order of orders.value) {
     const businessPartner = await getBusinessPartner(order.CardCode)
     if (!businessPartner) {
-      // BP is probably inactive, just skip it, can't validate for inactives
+      // Should never happen..?
+      continue
+    }
+    if (businessPartner.Valid === 'tNO') {
+      // BP is inactive, just skip it, can't validate for inactives
       continue
     }
 

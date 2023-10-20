@@ -9,8 +9,8 @@ export async function getBusinessPartner(CardCode: string): Promise<SapBusinessP
   try {
     const res = await authClient.get<SapBusinessPartnerData>(`BusinessPartners('${CardCode}')`, {
       params: {
-        $select: ['CardCode', 'CardName', 'BPAddresses'].join(','),
-        $filter: "Valid eq 'tYES'",
+        $select: ['CardCode', 'CardName', 'Valid', 'BPAddresses'].join(','),
+        //$filter: "Valid eq 'tYES'",
       },
     })
 
