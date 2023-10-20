@@ -55,15 +55,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
   const validatedAddress = await getAddressValidation(addressExtension)
 
   if (!validatedAddress) {
-    await sendAddressValidationToTeams(
-      'Document Address validation failed',
-      `**Customer Number**: ${cardCode} <BR>
-      **OrderNumber**: ${orderNumber} <BR>
-      **Error**: No address found in DAWA <BR>
-      **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>`
-    )
     return 'Address validation failed: No address found in DAWA'
-  } else if (validatedAddress.length === 0) {
     await sendAddressValidationToTeams(
       'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
@@ -71,7 +63,15 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
       **Error**: No address found in DAWA <BR>
       **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>`
     )
+  } else if (validatedAddress.length === 0) {
     return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
+    await sendAddressValidationToTeams(
+      'Document Address validation failed',
+      `**Customer Number**: ${cardCode} <BR>
+      **OrderNumber**: ${orderNumber} <BR>
+      **Error**: No address found in DAWA <BR>
+      **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>`
+    )
   }
 
   let addressMatchFound = false
@@ -89,6 +89,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
     }
   }
   if (!addressMatchFound) {
+    return 'None of the addresses found in DAWA matched: ' + wrongAddresses
     await sendAddressValidationToTeams(
       'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
@@ -97,7 +98,6 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
       **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>
       **Address DAWA**: ${wrongAddresses.join('<BR>')}`
     )
-    return 'None of the addresses found in DAWA matched: ' + wrongAddresses
   }
 
   return 'validated'
@@ -126,6 +126,7 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
   const validatedAddress = await getAddressValidation(addressExtension)
 
   if (!validatedAddress) {
+    return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
     await sendAddressValidationToTeams(
       'Business Partner Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
@@ -133,8 +134,8 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
       **Error**: No address found in DAWA <BR>
       **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>`
     )
-    return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
   } else if (validatedAddress.length === 0) {
+    return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
     await sendAddressValidationToTeams(
       'Business Partner Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
@@ -142,7 +143,6 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
       **Error**: No address found in DAWA <BR>
       **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>`
     )
-    return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
   }
 
   let addressMatchFound = false
@@ -160,6 +160,7 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
     }
   }
   if (!addressMatchFound) {
+    return 'None of the addresses found in DAWA matched ' + wrongAddresses
     await sendAddressValidationToTeams(
       'Business Partner Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
@@ -168,7 +169,6 @@ export async function validateBPAddress(address: SapBusinessPartnerAddress, card
       **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>
       **Address DAWA**: ${wrongAddresses.join('<BR>')}`
     )
-    return 'None of the addresses found in DAWA matched ' + wrongAddresses
   }
 
   return 'validated'

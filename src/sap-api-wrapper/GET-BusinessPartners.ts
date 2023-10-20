@@ -34,7 +34,7 @@ export async function getActiveBusinessPartners(skip?: number): Promise<SapBusin
         $select: ['CardCode', 'CardName', 'BPAddresses', 'Valid'].join(','),
         $filter: [
           "Valid eq 'tYES'",
-          'ShippingType ne 14',
+          '(ShippingType ne 14 or ShippingType eq NULL)',
           "CardType eq 'cCustomer'",
           "(U_CCF_DF_AddressesValidated ne 'Y' or U_CCF_DF_AddressesValidated eq NULL)",
         ].join(' and '),
