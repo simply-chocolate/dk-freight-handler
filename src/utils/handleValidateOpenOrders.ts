@@ -28,7 +28,6 @@ export async function validateOpenOrders() {
     }
 
     if (order.AddressExtension.U_CCF_DF_AddressValidationS === 'validated') {
-      console.log(new Date(new Date().getTime()).toLocaleString() + ': Address validated on BP for order:', order.DocNum, 'skipping...')
       await setAddressValidationOrder(order.DocEntry, order.DocNum, 'validated')
       continue
     }

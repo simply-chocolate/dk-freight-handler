@@ -124,7 +124,7 @@ export async function mapStockTransferToDeliveryNote(
     if (!itemData) {
       return
     }
-    const itemWeight = itemData.ItemUnitOfMeasurementCollection.find(
+    let itemWeight = itemData.ItemUnitOfMeasurementCollection.find(
       (UoMCollection) => UoMCollection.UoMEntry === stockTransferLine.UoMEntry && UoMCollection.UoMType === 'iutSales'
     )?.Weight1
     if (!itemWeight) {
@@ -132,7 +132,7 @@ export async function mapStockTransferToDeliveryNote(
         'No item weight found',
         `**StockTransfer**: ${stockTransfer.DocNum}  **ItemCode**: ${stockTransferLine.ItemCode} <BR> **ItemName**: ${stockTransferLine.ItemDescription}`
       )
-      return
+      itemWeight = 0.01
     }
 
     const documentLine: DocumentLines = {
