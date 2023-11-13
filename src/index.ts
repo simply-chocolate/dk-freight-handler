@@ -7,7 +7,6 @@ import { iterateDeliveryNotes } from './utils/handleIterateDeliveries.ts'
 import { iterateStockTransfers } from './utils/handleIterateStockTransfers.ts'
 import { validateBusinessPartners } from './utils/handleValidateBusinessPartners.ts'
 import { validateOpenOrders } from './utils/handleValidateOpenOrders.ts'
-import { getAllActiveBusinessPartners } from './sap-api-wrapper/GET-BusinessPartners.ts'
 
 async function main() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
@@ -53,7 +52,7 @@ async function main() {
       }
     })
     // BOOKING FREIGHT AND PRINTING LABELS
-    cron('*/30 */1 7-15 * * 1-5', async () => {
+    cron('0 */1 6-16 * * 1-5', async () => {
       try {
         await iterateDeliveryNotes()
         await iterateStockTransfers()

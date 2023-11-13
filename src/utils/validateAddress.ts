@@ -55,7 +55,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
   const validatedAddress = await getAddressValidation(addressExtension)
 
   if (!validatedAddress) {
-    return 'Address validation failed: No address found in DAWA'
+    return 'No address found in DAWA'
     await sendAddressValidationToTeams(
       'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
@@ -64,7 +64,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
       **Address SAP**: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity} <BR>`
     )
   } else if (validatedAddress.length === 0) {
-    return 'Address not found in DAWA: ' + addressExtension.ShipToStreet + ', ' + addressExtension.ShipToZipCode + ' ' + addressExtension.ShipToCity
+    return 'No address found in DAWA'
     await sendAddressValidationToTeams(
       'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
@@ -89,7 +89,7 @@ export async function validateDocumentAddress(addressExtension: AddressExtension
     }
   }
   if (!addressMatchFound) {
-    return 'None of the addresses found in DAWA matched: ' + wrongAddresses
+    return 'Unable to match any of these addresses: ' + wrongAddresses
     await sendAddressValidationToTeams(
       'Document Address validation failed',
       `**Customer Number**: ${cardCode} <BR>
