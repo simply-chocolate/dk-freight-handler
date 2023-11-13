@@ -30,7 +30,7 @@ async function main() {
     console.log(new Date(new Date().getTime()).toLocaleString() + ': Finished the initial runs')
 
     // VALIDATING BUSINESS PARTNERS
-    cron('0 0 17 * * 1-5', async () => {
+    cron('0 0 * * * 1-5', async () => {
       try {
         console.log(new Date(new Date().getTime()).toLocaleString() + ': VALIDATING BUSINESS PARTNERS')
         await handleCheckValidatedBusinessPartners()
@@ -43,7 +43,7 @@ async function main() {
     })
 
     // VALIDATING OPEN ORDERS
-    cron('0 */10 7-17 * * 1-5', async () => {
+    cron('0 */10 * * * *', async () => {
       try {
         await validateOpenOrders()
         await logoutSap()
@@ -52,7 +52,7 @@ async function main() {
       }
     })
     // BOOKING FREIGHT AND PRINTING LABELS
-    cron('0 */1 6-16 * * 1-5', async () => {
+    cron('0 */1 * * * *', async () => {
       try {
         await iterateDeliveryNotes()
         await iterateStockTransfers()
