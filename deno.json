@@ -1,5 +1,11 @@
 {
   "importHelpers": true,
+  "imports": {
+    "axios": "npm:axios@^1.4.0",
+    "date-fns": "npm:date-fns@^2.30.0",
+    "dotenv": "npm:dotenv@^16.3.1",
+    "ms-teams-webhook": "npm:ms-teams-webhook@^2.0.2"
+  },
   "tasks": {
     "dev": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/index.ts"
   }

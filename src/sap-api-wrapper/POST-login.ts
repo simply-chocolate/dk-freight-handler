@@ -27,6 +27,7 @@ export type ErrorDataType = {
     }
   }
 }
+// TODO: store the cookie in a file and use it for the next requests until it expires
 
 export async function getAuthorizedClient(): Promise<AxiosInstance> {
   for (let retryCount = 0; retryCount < 3; retryCount++) {
