@@ -73,7 +73,7 @@ export function mapSAPDataToDF(deliveryNote: SapDeliveryNoteData, orderNumber: n
         NumberOfItems: deliveryNote.U_CCF_DF_NumberOfShippingProducts == null ? 1 : deliveryNote.U_CCF_DF_NumberOfShippingProducts,
         Type: deliveryNote.U_CCF_DF_ShippingProduct,
         Description: 'Chokolade',
-        Weight: Math.round(totalWeight),
+        Weight: Math.ceil(totalWeight),
       },
     ],
     Receiver: {

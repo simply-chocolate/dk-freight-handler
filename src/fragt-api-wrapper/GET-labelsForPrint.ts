@@ -33,7 +33,7 @@ export async function getLabelsForPrintPrinter(consignmentNumbers: string[]) {
   } catch (error) {
     if (error instanceof AxiosError) {
       await sendTeamsMessage(
-        'createConsignment DF request failed',
+        'getLabelsForPrintPrinter request failed',
         `**consignmentNumbers**: ${consignmentNumbers.join(', ')}<BR>
           **Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
