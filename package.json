@@ -2,13 +2,15 @@
   "dependencies": {
     "axios": "^1.4.0",
     "date-fns": "^2.30.0",
+    "deno": "^0.1.1",
     "dotenv": "^16.3.1",
-    "ms-teams-webhook": "^2.0.2"
+    "ms-teams-webhook": "^2.0.2",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
     "@types/node": "^20.4.2"
   },
   "scripts": {
-    "start": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/index.ts" 
+    "start": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/index.ts"
   }
 }
