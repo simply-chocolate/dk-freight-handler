@@ -7,6 +7,8 @@
     "ms-teams-webhook": "npm:ms-teams-webhook@^2.0.2"
   },
   "tasks": {
-    "dev": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/index.ts"
+    "bp": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/indexValidateBP.ts",
+    "oo": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/indexValidateOrders.ts",
+    "bf": "deno run --allow-env --allow-read --allow-net --allow-write --allow-run src/indexBookFreight.ts"
   }
 }
