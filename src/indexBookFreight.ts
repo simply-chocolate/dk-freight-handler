@@ -16,8 +16,6 @@ async function mainBF() {
   } else {
     // BOOKING FREIGHT AND PRINTING LABELS
     try {
-      console.log('Starting Book Freight process')
-      await sendTeamsMessage('Starting book freight process')
       await iterateDeliveryNotes()
       await iterateStockTransfers()
       await logoutSap()
