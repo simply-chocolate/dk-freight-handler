@@ -3,6 +3,7 @@ import { logoutSap } from './sap-api-wrapper/POST-logout.ts'
 import { handleCheckValidatedBusinessPartners } from './utils/handleCheckValidatedBusinessPartners.ts'
 import { checkEnvs } from './utils/handleCheckingEnvs.ts'
 import { validateBusinessPartners } from './utils/handleValidateBusinessPartners.ts'
+import { sendTeamsMessage } from "./teams_notifier/SEND-teamsMessage.ts";
 
 async function mainBP() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
@@ -18,7 +19,7 @@ async function mainBP() {
       await validateBusinessPartners()
       await logoutSap()
     } catch (error) {
-      console.log(error)
+      await sendTeamsMessage('Error in mainBP', error, 'summary')  
     }
   }
 }

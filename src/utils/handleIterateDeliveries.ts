@@ -12,6 +12,7 @@ export async function iterateDeliveryNotes() {
   if (!deliveryNotes) {
     return
   } else if (deliveryNotes.value.length === 0) {
+    console.log("No delivery notes found")
     return
   }
 
@@ -21,7 +22,8 @@ export async function iterateDeliveryNotes() {
       await sendTeamsMessage(
         'Delivery note has no base entry on first line or no first line',
         `**Customer Number**: ${deliveryNote.CardCode} <BR>
-        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`,
+        'summary'
       )
       continue
     }
@@ -43,7 +45,8 @@ export async function iterateDeliveryNotes() {
         await sendTeamsMessage(
           'Trying to Print Label again, but no consignment ID is on order',
           `**Customer Number**: ${deliveryNote.CardCode} <BR>
-          **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+          **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`,
+        'summary'
         )
 
         continue
@@ -61,7 +64,8 @@ export async function iterateDeliveryNotes() {
       await sendTeamsMessage(
         'Delivery address is not valid',
         `**Customer Number**: ${deliveryNote.CardCode} <BR>
-        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`,
+        'summary'
       )
       continue
     }
@@ -72,7 +76,8 @@ export async function iterateDeliveryNotes() {
       await sendTeamsMessage(
         'No order number found for delivery note',
         `**Customer Number**: ${deliveryNote.CardCode} <BR>
-        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`
+        **Delivery Note Number**: ${deliveryNote.DocNum} <BR>`,
+        'summary'
       )
       continue
     }
@@ -84,7 +89,8 @@ export async function iterateDeliveryNotes() {
         `Mapping of SAP data to DF data failed <BR>
          **Customer Number**: ${deliveryNote.CardCode} <BR>
           **Delivery Note Number**: ${deliveryNote.DocNum} <BR>
-          **Error**: ${consignmentID.error}<BR>`
+          **Error**: ${consignmentID.error}<BR>`,
+          'summary'
       )
       continue
     }
@@ -94,6 +100,6 @@ export async function iterateDeliveryNotes() {
 
   const labelPrintResult = await printLabels(consignmentIDs)
   if (labelPrintResult.type === 'error') {
-    await sendTeamsMessage('Error printing labels', labelPrintResult.error)
+    await sendTeamsMessage('Error printing labels', labelPrintResult.error, 'summary')
   }
 }

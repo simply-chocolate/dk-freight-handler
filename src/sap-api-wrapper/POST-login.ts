@@ -54,9 +54,10 @@ export async function getAuthorizedClient(): Promise<AxiosInstance> {
         await sendTeamsMessage(
           'getAuthorizedClient SAP request failed',
           `**Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-            **Code**: ${error.response?.data.error.code}<BR>
+            **Code**: ${error.response?.data.error?.code}<BR>
             **Body**: ${JSON.stringify(error.config)}<BR>
-            **Error Message**: ${JSON.stringify(error.response?.data.error.message)}<BR>`
+            **Error Message**: ${JSON.stringify(error.response?.data.error?.message)}<BR>`,
+          'summary'
         )
       }
       await sleep(30000) // wait 30 seconds before retrying

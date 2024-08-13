@@ -20,7 +20,7 @@ async function mainBF() {
       await iterateStockTransfers()
       await logoutSap()
     } catch (error) {
-      console.log(error)
+      await sendTeamsMessage('Error in mainBF', error,'summary')
     }    
   }
 }

@@ -2,6 +2,7 @@ import 'https://deno.land/std@0.195.0/dotenv/load.ts'
 import { logoutSap } from './sap-api-wrapper/POST-logout.ts'
 import { checkEnvs } from './utils/handleCheckingEnvs.ts'
 import { validateOpenOrders } from './utils/handleValidateOpenOrders.ts'
+import { sendTeamsMessage } from "./teams_notifier/SEND-teamsMessage.ts";
 
 async function mainVO() {
   // Github repo for running deno on Pi (Seemingly only works in the terminal you run the curl script and export in, but it works
@@ -16,7 +17,7 @@ async function mainVO() {
       await validateOpenOrders()
       await logoutSap()
     } catch (error) {
-      console.log(error)
+      await sendTeamsMessage('Error in mainVO', error,'summary')
     }        
   }
 }
