@@ -44,7 +44,7 @@ export type SapStockTransferData = {
 }
 
 export async function getStockTransfers(skip?: number): Promise<SapStockTransfersData | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'GET StockTransfers' )
   const now = new Date(new Date().getTime()).toISOString().split('T')[0]
 
   try {
@@ -88,7 +88,8 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
         'getStockTransfers SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

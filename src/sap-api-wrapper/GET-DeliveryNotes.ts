@@ -57,7 +57,7 @@ export type AddressExtension = {
 }
 
 export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesData | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient(" GET DeliveryNotes")
   const now = new Date(new Date().getTime()).toISOString().split('T')[0]
 
   try {

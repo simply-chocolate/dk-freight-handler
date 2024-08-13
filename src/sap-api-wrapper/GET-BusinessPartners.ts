@@ -26,7 +26,7 @@ export type SapBusinessPartnerAddress = {
 }
 
 export async function getActiveBusinessPartners(skip?: number): Promise<SapBusinessPartnersData | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'GET Active BusinessPartners' )
 
   try {
     const res = await authClient.get<SapBusinessPartnersData>('BusinessPartners', {
@@ -50,7 +50,8 @@ export async function getActiveBusinessPartners(skip?: number): Promise<SapBusin
         'getActiveBusinessPartners SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

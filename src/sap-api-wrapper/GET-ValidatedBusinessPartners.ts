@@ -15,7 +15,7 @@ export type SapValidatedBusinessPartnerData = {
 }
 
 export async function getValidatedBusinessPartners(skip?: number): Promise<SapValidatedBusinessPartnersData | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'GET ValidatedBusinessPartners' )
 
   try {
     const res = await authClient.get<SapValidatedBusinessPartnersData>('BusinessPartners', {
@@ -33,7 +33,8 @@ export async function getValidatedBusinessPartners(skip?: number): Promise<SapVa
         'getValidatedBusinessPartners SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

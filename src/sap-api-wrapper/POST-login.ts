@@ -29,7 +29,7 @@ export type ErrorDataType = {
 }
 // TODO: store the cookie in a file and use it for the next requests until it expires
 
-export async function getAuthorizedClient(): Promise<AxiosInstance> {
+export async function getAuthorizedClient(place: string): Promise<AxiosInstance> {
   for (let retryCount = 0; retryCount < 3; retryCount++) {
     try {
       const res = await axios<SuccessDataType | ErrorDataType>({
@@ -52,7 +52,7 @@ export async function getAuthorizedClient(): Promise<AxiosInstance> {
     } catch (error) {
       if (error instanceof AxiosError) {
         await sendTeamsMessage(
-          'getAuthorizedClient SAP request failed',
+          'getAuthorizedClient SAP request failed at ' + place,
           `**Error Message**: ${JSON.stringify(error.response?.data)}<BR>
             **Code**: ${error.response?.data.error?.code}<BR>
             **Body**: ${JSON.stringify(error.config)}<BR>

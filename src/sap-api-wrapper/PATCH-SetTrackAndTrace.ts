@@ -9,7 +9,7 @@ export async function setTrackAndTraceUrl(
   consignmentID: string,
   path: 'DeliveryNotes' | 'StockTransfers'
 ): Promise<AxiosResponse | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'PATCH TrackAndTrace DeliveryNotes' )
 
   try {
     const res = await authClient.patch(`${path}(${docEntry})`, {
@@ -26,7 +26,8 @@ export async function setTrackAndTraceUrl(
         `**DeliveryNote**: ${deliveryNote}<BR>
         **Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

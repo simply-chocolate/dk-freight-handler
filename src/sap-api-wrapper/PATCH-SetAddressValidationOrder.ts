@@ -3,7 +3,7 @@ import { getAuthorizedClient } from './POST-login.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
 export async function setAddressValidationOrder(docEntry: number, order: number, validationString: string): Promise<AxiosResponse | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'PATCH Address validation Orders' )
 
   if (validationString.length > 100) {
     validationString = validationString.substring(0, 100)
@@ -24,7 +24,8 @@ export async function setAddressValidationOrder(docEntry: number, order: number,
         `**Order**: ${order}<BR>
         **Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

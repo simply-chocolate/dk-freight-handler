@@ -14,7 +14,7 @@ export type SapDocumentData = {
 }
 
 export async function getRelatedOrders(docEntries: number[], skip?: number): Promise<SapDocumentsData | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'GET RelatedOrders' )
   try {
     const res = await authClient.get<SapDocumentsData>('Orders', {
       params: {
@@ -31,7 +31,8 @@ export async function getRelatedOrders(docEntries: number[], skip?: number): Pro
         'getOpenOrders SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

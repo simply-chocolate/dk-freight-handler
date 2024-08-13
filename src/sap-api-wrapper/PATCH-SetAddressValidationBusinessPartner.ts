@@ -8,7 +8,7 @@ export async function setAddressValidationBusinessPartner(
   allAddressesValidated: boolean | null,
   BPAddresses?: SapBusinessPartnerAddress[]
 ): Promise<AxiosResponse | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'PATCH address validation BusinessPartners' )
 
   try {
     if (BPAddresses === undefined) {
@@ -46,7 +46,8 @@ export async function setAddressValidationBusinessPartner(
         `**CardCode**: ${CardCode}<BR>
         **Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

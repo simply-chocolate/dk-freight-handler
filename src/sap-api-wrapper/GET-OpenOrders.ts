@@ -25,7 +25,7 @@ export type SapDocumentData = {
 }
 
 export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'GET OpenOrders' )
   try {
     const res = await authClient.get<SapDocumentsData>('Orders', {
       params: {
@@ -64,7 +64,8 @@ export async function getOpenOrders(skip?: number): Promise<SapDocumentsData | v
         'getOpenOrders SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

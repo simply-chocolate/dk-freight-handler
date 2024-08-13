@@ -3,7 +3,7 @@ import { getAuthorizedClient } from './POST-login.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
 export async function setFreightBooked(docEntry: number, deliveryNote: number): Promise<AxiosResponse | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'PATCH FreightBooked DeliveryNotes' )
 
   try {
     const res = await authClient.patch(`DeliveryNotes(${docEntry})`, {
@@ -18,7 +18,8 @@ export async function setFreightBooked(docEntry: number, deliveryNote: number): 
         `**DeliveryNote**: ${deliveryNote}<BR>
         **Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`,
+        'summary'
       )
     }
   }

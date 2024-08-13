@@ -22,7 +22,7 @@ type SapItemBarCode = {
 }
 
 export async function getItemData(itemCode: string): Promise<SapItemData | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'GET Items' )
 
   try {
     const res = await authClient.get<SapItemData>(`Items('${itemCode}')`, {
@@ -38,7 +38,8 @@ export async function getItemData(itemCode: string): Promise<SapItemData | void>
         'getItemData SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`, 
+        'summary'
       )
     }
   }

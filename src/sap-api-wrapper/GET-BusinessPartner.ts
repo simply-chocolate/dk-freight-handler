@@ -4,7 +4,7 @@ import { SapBusinessPartnerData } from './GET-BusinessPartners.ts'
 import { getAuthorizedClient } from './POST-login.ts'
 
 export async function getBusinessPartner(CardCode: string): Promise<SapBusinessPartnerData | void> {
-  const authClient = await getAuthorizedClient()
+  const authClient = await getAuthorizedClient( 'GET BusinessPartners' )
 
   try {
     const res = await authClient.get<SapBusinessPartnerData>(`BusinessPartners('${CardCode}')`, {
@@ -21,7 +21,8 @@ export async function getBusinessPartner(CardCode: string): Promise<SapBusinessP
         'getActiveBusinessPartners SAP request failed',
         `**Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`
+          **Body**: ${JSON.stringify(error.config)}<BR>`, 
+        'summary'
       )
     }
   }
