@@ -17,15 +17,11 @@ export async function sendTeamsMessage(title: string, body: string, summary: str
         text: body,
       };
 
-      // Log the payload for debugging purposes
-      console.log('Sending payload:', JSON.stringify(payload, null, 2));
-
       // Send the message
       const webhookResult = await webhook.send(payload);
 
       // Handle the response
       if (webhookResult) {
-        console.log('Webhook Result:', webhookResult);
         if (typeof webhookResult.text === 'string' && webhookResult.text.includes('429')) {
           console.log(new Date().toLocaleString() + ': Rate limit reached for error messages');
           // Wait 10 minutes and try again

@@ -18,7 +18,7 @@ async function mainBF() {
     try {
       await iterateDeliveryNotes()
       await iterateStockTransfers()
-      await logoutSap()
+      //await logoutSap()
     } catch (error) {
       await sendTeamsMessage('Error in mainBF', String(error),'summary')
     }    

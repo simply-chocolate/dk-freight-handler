@@ -17,7 +17,7 @@ async function mainBP() {
     try {
       await handleCheckValidatedBusinessPartners()
       await validateBusinessPartners()
-      await logoutSap()
+      //await logoutSap()
     } catch (error) {
       await sendTeamsMessage('Error in mainBP', String(error), 'summary')  
     }

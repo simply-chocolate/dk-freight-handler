@@ -57,7 +57,7 @@ export type AddressExtension = {
 }
 
 export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesData | void> {
-  const authClient = await getAuthorizedClient(" GET DeliveryNotes")
+  const authClient = await getAuthorizedClient("GET DeliveryNotes")
   const now = new Date(new Date().getTime()).toISOString().split('T')[0]
 
   try {
@@ -96,10 +96,14 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'U_CCF_DF_NumberOfShippingProducts gt 0',
           "U_CCF_DF_AddressValidation eq 'validated'",
         ].join(' and '),
-        //$filter: 'DocNum eq 115485',
+        //$filter: 'DocNum eq 115485', // Adjust this to filter as needed
         $skip: skip,
       },
     })
+
+    if (!res.data || res.data.value.length === 0) {
+      return
+    }
 
     return res.data
   } catch (error) {
@@ -111,6 +115,8 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           **Body**: ${JSON.stringify(error.config)}<BR>`,
         'summary'
       )
+    } else {
+      console.log("Unexpected error:", error.response?.data) // Debugging
     }
   }
 }
