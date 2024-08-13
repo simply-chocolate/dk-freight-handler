@@ -87,7 +87,7 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'DocumentLines',
           'AddressExtension',
         ].join(','),
-        /*$filter: [
+        $filter: [
           `DocDate ge ${now}`,
           "(U_CCF_DF_FreightBooked ne 'Y' or U_CCF_DF_FreightBooked eq NULL)",
           'TransportationCode ne 14',
@@ -96,8 +96,8 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'U_CCF_DF_NumberOfShippingProducts gt 0',
           "U_CCF_DF_AddressValidation eq 'validated'",
         ].join(' and '),
-        */
-        $filter: 'DocNum eq 115485',
+        
+        //$filter: 'DocNum eq 115485',
         $skip: skip,
       },
     })
