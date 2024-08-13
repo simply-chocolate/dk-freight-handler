@@ -13,6 +13,7 @@ export async function iterateDeliveryNotes() {
     return
   } else if (deliveryNotes.value.length === 0) {
     console.log("No delivery notes found")
+    console.log(deliveryNotes)
     return
   }
 

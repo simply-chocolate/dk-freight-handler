@@ -96,7 +96,6 @@ export async function getDeliveryNotes(skip?: number): Promise<SapDeliveryNotesD
           'U_CCF_DF_NumberOfShippingProducts gt 0',
           "U_CCF_DF_AddressValidation eq 'validated'",
         ].join(' and '),
-        
         //$filter: 'DocNum eq 115485',
         $skip: skip,
       },
