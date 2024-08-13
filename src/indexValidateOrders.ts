@@ -17,7 +17,7 @@ async function mainVO() {
       await validateOpenOrders()
       await logoutSap()
     } catch (error) {
-      await sendTeamsMessage('Error in mainVO', error,'summary')
+      await sendTeamsMessage('Error in mainVO', String(error),'summary')
     }        
   }
 }

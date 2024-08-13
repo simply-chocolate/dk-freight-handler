@@ -1,7 +1,6 @@
 import { AxiosError } from 'npm:axios@1.4.0'
-import { getAuthorizedClient } from './POST-login.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
-import { AddressExtension } from './GET-DeliveryNotes.ts'
+import { getAuthorizedClient } from './POST-login.ts'
 
 export type SapDocumentsData = {
   value: SapDocumentData[]

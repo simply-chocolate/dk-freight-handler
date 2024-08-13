@@ -38,7 +38,8 @@ export async function getLabelsForPrintPrinter(consignmentNumbers: string[]) {
           **Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
           **Body**: ${JSON.stringify(error.config?.data)}<BR>
-          `
+          `,
+        'summary'
       )
     }
   }

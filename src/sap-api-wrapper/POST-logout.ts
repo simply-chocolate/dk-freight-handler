@@ -1,6 +1,5 @@
 import { AxiosError } from 'npm:axios@^1.4.0'
 import { getAuthorizedClient } from '../sap-api-wrapper/POST-login.ts'
-import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
 
 export async function logoutSap() {
   const authClient = await getAuthorizedClient( 'POST Logout' )

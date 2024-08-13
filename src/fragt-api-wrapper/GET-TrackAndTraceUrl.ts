@@ -22,7 +22,8 @@ export async function getTrackAndTraceUrl(consignmentID: string, deliveryNote: n
         'getTrackAndTraceUrl DF request failed',
         `**DeliveryNote**: ${deliveryNote}<BR>
         **Code**: ${error.response?.data.error.code}<BR>
-          **Error Message**: ${error.response?.data.error.message}<BR>`
+          **Error Message**: ${error.response?.data.error.message}<BR>`,
+        'summary'
       )
     }
   }

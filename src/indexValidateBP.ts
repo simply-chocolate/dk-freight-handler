@@ -19,7 +19,7 @@ async function mainBP() {
       await validateBusinessPartners()
       await logoutSap()
     } catch (error) {
-      await sendTeamsMessage('Error in mainBP', error, 'summary')  
+      await sendTeamsMessage('Error in mainBP', String(error), 'summary')  
     }
   }
 }

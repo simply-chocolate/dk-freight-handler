@@ -23,7 +23,7 @@ export async function getLabelsForPrintPDF(consignmentNumbers: string[]): Promis
           **Code**: ${error.code}<BR>
           **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
           **Body**: ${JSON.stringify(error.config?.data)}<BR>
-          `
+          `, 'summary'
       )
     }
   }

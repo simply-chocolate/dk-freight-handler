@@ -8,30 +8,36 @@ const webhook = new IncomingWebhook(url);
 export async function sendTeamsMessage(title: string, body: string, summary: string) {
   while (true) {
     try {
-      await sleep(5000);
-
-      const webhookResult = await webhook.send({
+      // Create the payload object
+      const payload = {
         '@type': 'MessageCard',
+        '@context': 'http://schema.org/extensions', // Include the @context field as it is required
         title: extractStringEnvVar('DEVICE_NAME') + ': ' + title,
         summary: summary,
         text: body,
-      });
+      };
 
+      // Log the payload for debugging purposes
+      console.log('Sending payload:', JSON.stringify(payload, null, 2));
+
+      // Send the message
+      const webhookResult = await webhook.send(payload);
+
+      // Handle the response
       if (webhookResult) {
-        if (typeof webhookResult.text === 'string') {
-          if (webhookResult.text.includes('429')) {
-            console.log(new Date().toLocaleString() + ': Rate limit reached for error messages');
-            // Wait 10 minutes and try again
-            await sleep(600000);
-          } else {
-            break;
-          }
+        console.log('Webhook Result:', webhookResult);
+        if (typeof webhookResult.text === 'string' && webhookResult.text.includes('429')) {
+          console.log(new Date().toLocaleString() + ': Rate limit reached for error messages');
+          // Wait 10 minutes and try again
+          await sleep(600000);
         } else {
           break;
         }
       }
     } catch (error) {
-      console.log('Error sending teams message', error);
+      // Log error details
+      console.log('Error sending teams message:', error.response?.data || error.message);
+      break; // Stop retrying on error
     }
   }
 }

@@ -87,8 +87,9 @@ export async function createConsignment(body: ConsignmentBodyData, deliveryNote:
         `**DeliveryNote**: ${deliveryNote}<BR>
           **Code**: ${error.code}<BR>
           **Error**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config?.data)}<BR>
-          `
+          **Body**: ${JSON.stringify(error.config?.data)}<BR>,
+          `,
+        'summary'
       )
     }
     return
