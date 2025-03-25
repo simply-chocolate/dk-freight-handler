@@ -54,6 +54,7 @@ export async function iterateDeliveryNotes() {
         continue
       }
       consignmentIDs.push(deliveryNote.U_CCF_DF_ConsignmentID)
+      
       await setFreightBooked(deliveryNote.DocEntry, deliveryNote.DocNum)
       continue
     }

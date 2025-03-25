@@ -22,6 +22,7 @@ export async function setFreightBooked(docEntry: number, deliveryNote: number): 
         'summary'
       )
     }
+    console.log(`Error in setFreightBooked, just marking as freight booked. DeliveryNote: ${deliveryNote}`)
     await setFreightBooked(docEntry, deliveryNote)
   }
 }

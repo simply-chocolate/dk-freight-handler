@@ -1,6 +1,7 @@
 import { AxiosError, AxiosResponse } from 'npm:axios@1.4.0'
 import { getAuthorizedClient } from './POST-login.ts'
 import { sendTeamsMessage } from '../teams_notifier/SEND-teamsMessage.ts'
+import { setFreightBooked } from "./PATCH-SetFreightBooked.ts";
 
 export async function setTrackAndTraceUrl(
   trackAndTraceUrl: string,
@@ -30,5 +31,7 @@ export async function setTrackAndTraceUrl(
         'summary'
       )
     }
+    console.log(`Error in setTrackAndTraceUrl, just marking as freight booked. DeliveryNote: ${deliveryNote}`)
+    await setFreightBooked(docEntry, deliveryNote)
   }
 }

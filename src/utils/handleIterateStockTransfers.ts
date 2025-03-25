@@ -19,6 +19,7 @@ export async function iterateStockTransfers() {
   const consignmentsIds: string[] = []
 
   for (const stockTransfer of stockTransfers.value) {
+    console.log(new Date(new Date().getTime()).toLocaleString(), ': stockTransfer:', stockTransfer.DocNum)
     let amountOf01Lines = 0
     for (const line of stockTransfer.StockTransferLines) {
       if (line.FromWarehouseCode !== '01') {
