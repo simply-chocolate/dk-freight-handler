@@ -6,6 +6,7 @@ const url = extractStringEnvVar('TEAMS_WEBHOOK_URL');
 const webhook = new IncomingWebhook(url);
 
 export async function sendTeamsMessage(title: string, body: string, summary: string) {
+  console.log(new Date().toLocaleString() + ': ', body);
   while (true) {
     try {
       // Create the payload object

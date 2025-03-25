@@ -22,5 +22,6 @@ export async function setFreightBooked(docEntry: number, deliveryNote: number): 
         'summary'
       )
     }
+    await setFreightBooked(docEntry, deliveryNote)
   }
 }
