@@ -12,7 +12,7 @@ export async function iterateDeliveryNotes() {
   if (!deliveryNotes) {
     return
   } else if (deliveryNotes.value.length === 0) {
-    console.log("No delivery notes found")
+    console.log(new Date().toISOString() + ": No delivery notes found")
     return
   }
 
