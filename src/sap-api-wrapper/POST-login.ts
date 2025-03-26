@@ -39,7 +39,7 @@ async function readSessionFromFile(): Promise<SessionData | null> {
     const session = JSON.parse(data);
 
     if (session.expiresAt > Date.now()) {
-      console.log("session is still valid for minutes: ", (session.expiresAt - Date.now()) / 60000);
+      // console.log("session is still valid for minutes: ", (session.expiresAt - Date.now()) / 60000);
       return session;
     } else {
       console.log("Session has expired");

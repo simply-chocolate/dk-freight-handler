@@ -32,6 +32,7 @@ export async function getLabelsForPrintPrinter(consignmentNumbers: string[]) {
     await savePDF(pdfData, savePath)
   } catch (error) {
     if (error instanceof AxiosError) {
+      console.log('getLabelsForPrintPrinter request failed', error)
       await sendTeamsMessage(
         'getLabelsForPrintPrinter request failed',
         `**consignmentNumbers**: ${consignmentNumbers.join(', ')}<BR>
