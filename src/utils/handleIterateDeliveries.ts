@@ -101,7 +101,9 @@ export async function iterateDeliveryNotes() {
     consignmentIDs.push(consignmentID.data)
   }
 
+
   const labelPrintResult = await printLabels(consignmentIDs)
+  console.log('labelPrintResult', labelPrintResult)
   if (labelPrintResult.type === 'error') {
     await sendTeamsMessage('Error printing labels', labelPrintResult.error, 'summary')
   }
