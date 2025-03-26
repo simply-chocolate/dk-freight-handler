@@ -4,7 +4,7 @@ export async function savePDF(pdfData: Uint8Array, prefix: string): Promise<retu
   if (Deno.build.os === 'windows') {
     try {
       // save path in test folder
-      const tempFilePath = `./src/test/${prefix}.pdf`
+      const tempFilePath = `./src/temp/${prefix}.pdf`
       await Deno.writeFile(tempFilePath, pdfData)
       return { type: 'success', data: tempFilePath }
     } catch (error) {
