@@ -84,13 +84,14 @@ export async function getStockTransfers(skip?: number): Promise<SapStockTransfer
     return res.data
   } catch (error) {
     if (error instanceof AxiosError) {
-      await sendTeamsMessage(
-        'getStockTransfers SAP request failed',
-        `**Code**: ${error.code}<BR>
-          **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
-          **Body**: ${JSON.stringify(error.config)}<BR>`,
-        'summary'
-      )
+      console.log(`Error in getStockTransfers`, error.code, error.response?.data)
+      // await sendTeamsMessage(
+      //   'getStockTransfers SAP request failed',
+      //   `**Code**: ${error.code}<BR>
+      //     **Error Message**: ${JSON.stringify(error.response?.data)}<BR>
+      //     **Body**: ${JSON.stringify(error.config)}<BR>`,
+      //   'summary'
+      // )
     }
   }
 }

@@ -26,7 +26,7 @@ export type ErrorDataType = {
   };
 };
 
-const sessionFilePath = "./src/sap-api-wrapper/sap_session.json";
+const sessionFilePath = "./src/sap-api-wrapper/sap_session_v2.json";
 
 type SessionData = {
   cookie: string;

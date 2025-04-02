@@ -41,6 +41,7 @@ export async function setAddressValidationBusinessPartner(
     }
   } catch (error) {
     if (error instanceof AxiosError) {
+      console.log('Error in setAddressValidationBusinessPartner', error.code, error.response?.data)
       await sendTeamsMessage(
         'setAddressValidationBusinessPartner SAP request failed',
         `**CardCode**: ${CardCode}<BR>
