@@ -75,15 +75,19 @@ export async function getAllOpenOrders(): Promise<SapDocumentsData | void> {
   const openOrders: SapDocumentsData = { value: [], 'odata.nextLink': '' }
 
   for (let page = 0; ; page++) {
+    console.log(`Fetching page ${page + 1} of open orders...`)
     const currentPage = await getOpenOrders(page * 20)
     if (!currentPage) {
       break
     }
+    
     openOrders.value.push(...currentPage.value)
 
     if (!currentPage['odata.nextLink']) {
+      console.log('No more pages to fetch.')
       break
     } else if (currentPage['odata.nextLink'] === '') {
+      console.log('No more pages to fetch.2')
       break
     }
   }

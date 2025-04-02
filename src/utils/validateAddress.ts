@@ -24,6 +24,7 @@ export type ValidatedAddress = {
 
 export async function getAddressValidation(addressExtension: AddressExtension): Promise<ValidatedAddressResult | void> {
   try {
+    console.log(`Trying to validate address: ${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}`)
     const res = await axios.get<ValidatedAddressResult>(
       `https://api.dataforsyningen.dk/adresser/?q=${addressExtension.ShipToStreet}, ${addressExtension.ShipToZipCode} ${addressExtension.ShipToCity}`
     )
