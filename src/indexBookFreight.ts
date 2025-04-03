@@ -16,7 +16,7 @@ async function mainBF() {
   } else {
     // BOOKING FREIGHT AND PRINTING LABELS
     try {
-      // await iterateDeliveryNotes()
+      await iterateDeliveryNotes()
       await iterateStockTransfers()
       //await logoutSap()
     } catch (error) {
